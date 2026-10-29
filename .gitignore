@@ -1,0 +1,57 @@
+# 依赖与构建产物
+node_modules/
+dist/
+deploy/
+build/
+.wrangler/
+dist-ssr/
+*.tsbuildinfo
+frontend/dist/
+
+# 本地密钥（**绝不入库**）
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+.env
+.env.*
+!.env.example
+!.env.*.example
+.envrc
+
+# 真实配置（含 D1/KV id、域名、sitekey）
+# 用 config.env* 覆盖 .tmp/.bak 中间产物：scripts/lib.sh 改配置时会产生 config.env.tmp，
+# 里面同样是真实 id / 域名，若崩在 mv 之前就会漏进仓库。
+config.env*
+!config.env.example
+
+# 证书 / 私钥
+*.pem
+*.key
+*.pfx
+*.p12
+id_rsa*
+id_ed25519*
+
+# 本地数据库
+*.db
+*.sqlite
+*.sqlite3
+
+# 日志与覆盖率
+*.log
+logs/
+coverage/
+.eslintcache
+
+# 打包 / 临时文件
+*.local
+*.bak
+*.orig
+*.rej
+*.tmp
+
+# 编辑器 / 系统
+.DS_Store
+.idea/
+.vscode/
+*.swp

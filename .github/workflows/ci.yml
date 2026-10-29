@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: 后端 + 前端 + 运维脚本
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      # npm workspaces：一次装好 backend/ 与 frontend/
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 类型检查（后端 + 前端）
+        run: npm run typecheck
+
+      - name: 构建（后端 + 前端）
+        run: npm run build
+
+      - name: 运维脚本语法检查
+        run: |
+          for f in scripts/*.sh wofuf; do
+            bash -n "$f" || exit 1
+          done
+
+      - name: 配置自检（用模板，不碰真实配置）
+        run: |
+          CONFIG_FILE=config.env.example bash scripts/config.sh check

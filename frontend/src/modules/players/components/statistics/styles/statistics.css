@@ -1,0 +1,52 @@
+/* ---------------- 固定元素大小，保证每行对齐 ---------------- */
+/* 统计概览容器（顶部卡片容器） */
+.stats-overview-container {
+  justify-content: flex-start; /* 横向左对齐，保证每行子项对齐规整 */
+  align-items: flex-start; /* 多行顶端对齐，避免子项拉伸 */
+  align-content: flex-start; /* 换行后多行顶端对齐，间距由 gap 控制 */
+}
+
+/* 统计概览卡片（固定宽高，保证所有卡片一致） */
+.stat-overview-card {
+  width: 180px; /* 固定宽度：保证同一行卡片宽度一致，每行对齐 */
+  height: 90px; /* 固定高度：保证所有卡片高度一致，上下对齐 */
+  box-sizing: border-box; /* 关键：padding 不占用固定宽高，避免尺寸偏差 */
+}
+
+/* 统计详情容器（详细数据列表容器） */
+.stats-detail-container {
+  justify-content: flex-start; /* 横向左对齐，保证每行详情项对齐规整 */
+  align-items: flex-start; /* 多行顶端对齐，避免子项拉伸 */
+  align-content: flex-start; /* 换行后多行顶端对齐，间距由 gap 控制 */
+}
+
+/* 统计详情项（固定宽高，保证所有详情项一致） */
+.stat-detail-item {
+  width: 220px; /* 固定宽度：保证同一行详情项宽度一致，每行对齐 */
+  height: 45px; /* 固定高度：保证所有详情项高度一致，上下对齐 */
+  box-sizing: border-box; /* 关键：padding 不占用固定宽高，避免尺寸偏差 */
+}
+
+/* 媒体查询：不同屏幕下调整固定宽度，兼顾适配性（保证每行显示数量规整） */
+@media (max-width: 768px) {
+  .stat-overview-card {
+    width: 140px; /* 小屏缩小卡片宽度，保证每行2列 */
+  }
+
+  .stat-detail-item {
+    width: 180px; /* 小屏缩小详情项宽度，保证每行2列 */
+  }
+}
+
+/* 超小屏（手机）：每行1列（固定宽度100%） */
+@media (max-width: 400px) {
+  .stat-overview-card {
+    width: 100%; /* 超小屏占满一行，保证显示完整 */
+    height: 80px;
+  }
+
+  .stat-detail-item {
+    width: 100%; /* 超小屏占满一行，保证显示完整 */
+    height: 40px;
+  }
+}

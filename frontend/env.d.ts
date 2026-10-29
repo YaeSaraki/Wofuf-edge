@@ -1,0 +1,9 @@
+/// <reference types="vite/client" />
+export const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+export const VITE_TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY
+export const VITE_SERVER_NAME = import.meta.env.VITE_SERVER_NAME
+export const VITE_SERVER_TAGLINE = import.meta.env.VITE_SERVER_TAGLINE
+export const VITE_SERVER_CORE = import.meta.env.VITE_SERVER_CORE
+export const VITE_SERVER_VERSION = import.meta.env.VITE_SERVER_VERSION
+export const VITE_SERVER_FOUNDED = import.meta.env.VITE_SERVER_FOUNDED
+export const VITE_SERVER_INTRO = import.meta.env.VITE_SERVER_INTRO

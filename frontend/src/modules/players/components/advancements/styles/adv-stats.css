@@ -1,0 +1,13 @@
+/* 统计卡片容器 */
+.adv-stats-container {
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
+}
+
+/* 成就统计卡片*/
+.adv-stat-card {
+  width: 180px;
+  height: 90px;
+  box-sizing: border-box;
+}

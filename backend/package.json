@@ -1,0 +1,26 @@
+{
+  "name": "@wofuf/backend",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Wofuf 后端 —— Cloudflare Workers + Hono + D1，只读、无状态",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "mkdir -p ../deploy/worker && esbuild src/index.ts --bundle --format=esm --target=es2022 --platform=neutral --conditions=worker,browser --main-fields=module,main --minify --outfile=../deploy/worker/worker.js",
+    "dev": "wrangler dev"
+  },
+  "dependencies": {
+    "hono": "^4.6.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241004.0",
+    "esbuild": "^0.28.2",
+    "typescript": "^5.6.3",
+    "wrangler": "^3.80.0"
+  },
+  "allowScripts": {
+    "workerd@1.20250718.0": true
+  },
+  "license": "MIT"
+}

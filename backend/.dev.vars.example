@@ -1,0 +1,4 @@
+# 复制为 .dev.vars 后填入真实值（本地 wrangler dev 使用；生产用 `wrangler secret put`）
+PLUGIN_API_SECRET="与 MeovO 插件 config/YaWebApi/webserver.yml 的 secret-key 一致"
+# 本地联调采集用（workerd 无法访问回环地址）
+ENABLE_DEV_ROUTES="true"

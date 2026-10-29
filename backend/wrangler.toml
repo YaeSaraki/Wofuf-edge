@@ -1,0 +1,72 @@
+# =============================================================================
+# Worker 配置的**模板**（也是本地 `wrangler dev` 用的配置）
+#
+# - 本地开发：直接 `npx wrangler dev`（用下面的占位符即可，miniflare 会模拟 D1/KV）
+# - 生产部署：**不要直接用这个文件**。`ops/scripts/build.sh` 会读它当模板，
+#   把 ops/config.env 里的真实值（Worker 名、D1/KV id、插件地址、CORS 域名）
+#   注入到 `deploy/wrangler.toml`，再从那个目录部署。
+#
+# 所以：这里只写**结构与默认值**，所有环境专属的值都从 ops/config.env 来。
+# =============================================================================
+name = "wofuf-edge"
+main = "src/index.ts"
+compatibility_date = "2025-07-01"
+workers_dev = true
+
+# ===================== 自定义域名 =====================
+# workers.dev 在国内被 DNS 污染，浏览器连不上 → 10 秒超时 / Network Error。
+# 解决办法是给 Worker 绑一个自己的域名，**在 Dashboard 里手动添加**：
+#
+#   Workers & Pages → wofuf-edge → Settings → Domains & Routes
+#   → Custom Domains → Add → 填 <你的自定义域名> → Add
+#
+# Cloudflare 会自动建好 DNS（CNAME api → wofuf-edge.<账号子域>.workers.dev，橙云代理）。
+# 域名本身在 ops/config.env 的 API_HOST 里。
+#
+# 也可以写在这里（但必须同时满足：routes 是**顶层键**、zone 与 Worker 同账号、
+# 且要写 zone_name，否则 wrangler 报 error 10082 或把 routes 当成环境变量）：
+#
+# routes = [
+#   { pattern = "<你的自定义域名>", custom_domain = true, zone_name = "<你的域名>" },
+# ]
+#
+# 注意：自定义域名必须是 **Worker 的自定义域名**（上面的 Dashboard 路径），
+# 不能只是一条指向源站 IP 的 DNS 记录 —— Worker 不在那台机器上，
+# 那样 Cloudflare 会把请求送到源站，而源站没有这个 SNI 的服务块，于是连接直接超时。
+#
+# 手动加过域名后，下面这段保持注释状态：否则每次 deploy 都会再尝试创建同名域名而报错。
+
+# ===================== D1（替代 MySQL） =====================
+[[d1_databases]]
+binding = "DB"
+database_name = "wofuf-db"
+database_id = "00000000-0000-0000-0000-000000000000" # 生产值在 ops/config.env，构建时注入
+migrations_dir = "migrations"
+
+# ===================== KV（替代 Caffeine 缓存） =====================
+[[kv_namespaces]]
+binding = "CACHE"
+id = "00000000000000000000000000000000" # 生产值在 ops/config.env，构建时注入
+
+# ===================== 定时任务（替代 @Scheduled） =====================
+[triggers]
+crons = ["*/5 * * * *"]
+
+[vars]
+PLUGIN_API_BASE_URL = "http://127.0.0.1:8080"   # 生产值在 ops/config.env，构建时注入
+BACKUP_SKIN_URL = "https://littleskin.cn/skin"
+# 只放行自己的前端域名（逗号分隔）。生产值由 ops/config.env 注入，不用改代码。
+CORS_ORIGINS = "http://localhost:5173"          # 生产值在 ops/config.env，构建时注入
+# Turnstile sitekey（公开值）。与 secret（TURNSTILE_SECRET）同时存在才启用验证。
+TURNSTILE_SITE_KEY = ""                           # 生产值由 config.env，构建时注入
+# 人机验证失败时是否放行：true = 站点永远可用（但没有防护）；false = 严格（403）。
+TURNSTILE_FAIL_OPEN = "false"                      # 生产值由 config.env，构建时注入
+
+# ===================== 人机验证（可选） =====================
+# Cloudflare Turnstile：前端拿一次性令牌，Worker 用 secret 校验。
+# secret 用 `wrangler secret put TURNSTILE_SECRET` 设置（不要写进本文件）。
+# 前端构建时由 ops/config.env 的 TURNSTILE_SITE_KEY 传入。
+# 没设置 secret = 整个验证不启用，接口照常放行。
+
+[observability]
+enabled = true

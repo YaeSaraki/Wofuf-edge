@@ -1,0 +1,38 @@
+@import 'tailwindcss';
+
+/* Tailwind v4 Dark Mode - Class Strategy */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* styles/globals.css */
+@layer utilities {
+  /* 隐藏 Webkit 浏览器滚动条 */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 隐藏 Firefox 滚动条 */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  /* 自定义美观的滚动条 */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+}

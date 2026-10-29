@@ -1,0 +1,27 @@
+{
+  "name": "wofuf-edge",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Wofuf 的无服务器后端与前端 —— Cloudflare Workers + Hono + D1 + Pages",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace @wofuf/backend && npm run build --workspace wofuf-web",
+    "typecheck": "npm run typecheck --workspace @wofuf/backend && npm run type-check --workspace wofuf-web",
+    "dev:api": "npm run dev --workspace @wofuf/backend",
+    "dev:web": "npm run dev --workspace wofuf-web",
+    "ops": "./wofuf"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "typescript": "^5.6.3",
+    "wrangler": "^3.80.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}

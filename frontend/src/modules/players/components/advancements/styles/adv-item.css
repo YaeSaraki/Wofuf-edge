@@ -1,0 +1,50 @@
+/* 成就项容器 */
+.adv-item-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
+}
+
+/* 成就项 */
+.bf-adv-item {
+  width: 220px;
+  height: 80px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: var(--bf-radius-sm);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+/* 成就图标包装器 */
+.bf-adv-icon-wrapper {
+  position: relative;
+  width: 3rem;
+  height: 3rem;
+  margin-right: var(--bf-space-2);
+  flex-shrink: 0;
+}
+
+/* 成就名称 */
+.bf-adv-name {
+  flex: 1;
+  font-size: 0.875rem;
+  color: var(--bf-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+/* 成就状态 */
+.bf-adv-status {
+  margin-left: var(--bf-space-2);
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
