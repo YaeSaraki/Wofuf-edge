@@ -3,7 +3,7 @@
 > Minecraft 服务器管理平台的**无服务器后端** —— Cloudflare Workers + Hono + D1。
 > 只读、无状态、常驻零服务器。
 
-[![CI](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/ci.yml)
+[![CI](https://github.com/YaeSaraki/Wofuf-edge/actions/workflows/ci.yml/badge.svg)](https://github.com/YaeSaraki/Wofuf-edge/actions/workflows/ci.yml)
 
 ```
 Minecraft 服务器 ──Tunnel/frp──▶ plugin.example.com
@@ -143,6 +143,12 @@ npm run build                # 前后端一起构建
 npm run dev:api              # 本地 Worker（wrangler dev :8787）
 npm run dev:web              # 本地前端（vite :5173，/api 代理到 :8787）
 ```
+
+> **别删 `frontend/package.json` 里的 `optionalDependencies`**
+> 那 20 条是 rollup / tailwindcss-oxide / lightningcss / parcel-watcher 的**各平台原生二进制**。
+> npm 生成锁文件时只保留**当前平台**的可选依赖 —— 在 macOS 上生成的 `package-lock.json` 里不会有 Linux 的二进制，
+> 于是 GitHub Actions（Linux）跑完 `npm ci` 就炸在 `Cannot find module @rollup/rollup-linux-x64-gnu`。
+> 显式声明后这些条目会跨平台留存。升级上述四个包时，记得同步更新这里的版本号。
 
 **Cloudflare 部署**：产物统一落在 `deploy/`，部署命令只认这一个目录 ——
 
