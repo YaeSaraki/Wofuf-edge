@@ -42,6 +42,11 @@ jobs:
       - name: 主题一致性断言
         run: bash scripts/check-theme.sh
 
+      # 语言包每条都要有中英文；用户可见的文案不许硬编码中文
+      # （现存的欠账在 scripts/i18n-allowlist.txt 里，清零后删掉那个文件）
+      - name: i18n 检查
+        run: bash scripts/check-i18n.sh
+
       - name: 运维脚本语法检查
         run: |
           for f in scripts/*.sh wofuf; do
