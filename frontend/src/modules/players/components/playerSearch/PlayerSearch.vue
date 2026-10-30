@@ -6,6 +6,7 @@ import type { PlayerSearchResult } from '@M/players/dtos/PlayerSearch.ts'
 import { renderAvatar } from '@SU/renderUTil.ts'
 import { addImagePrefixToBase64 } from '@SU/Base64Util.ts'
 import { translate } from '@S/services/i18n'
+import AppCard from '@S/components/ui/AppCard.vue'
 
 const router = useRouter()
 const playerService = new PlayerService()
@@ -41,7 +42,7 @@ function escapeRegExp(string: string): string {
 function highlightMatch(text: string, query: string): string {
   if (!query) return text
   const regex = new RegExp(`(${escapeRegExp(query)})`, 'gi')
-  return text.replace(regex, '<mark class="bf-highlight">$1</mark>')
+  return text.replace(regex, '<mark class="ui-highlight">$1</mark>')
 }
 
 // 格式化 UUID 显示（完整 UUID）
@@ -163,23 +164,23 @@ function clearSearch() {
 </script>
 
 <template>
-  <div class="bf-player-search">
+  <div class="ui-player-search">
     <!-- 搜索框 -->
-    <div class="bf-search-box">
-      <div class="bf-search-input-wrapper">
-        <svg class="bf-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <div class="ui-search-box">
+      <div class="ui-search-input-wrapper">
+        <svg class="ui-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="11" cy="11" r="8"/>
           <path d="m21 21-4.35-4.35"/>
         </svg>
         <input
           v-model="searchQuery"
           type="text"
-          class="bf-search-input"
+          class="ui-search-input"
           placeholder="搜索玩家名称或 UUID..."
         />
         <button
           v-if="searchQuery"
-          class="bf-clear-btn"
+          class="ui-clear-btn"
           @click="clearSearch"
           type="button"
         >
@@ -187,42 +188,42 @@ function clearSearch() {
             <path d="M18 6L6 18M6 6l12 12"/>
           </svg>
         </button>
-        <div v-if="isSearching" class="bf-search-loading">
-          <div class="bf-spinner"></div>
+        <div v-if="isSearching" class="ui-search-loading">
+          <div class="ui-spinner"></div>
         </div>
       </div>
     </div>
 
     <!-- 搜索结果 -->
-    <div v-if="showResults" class="bf-search-results">
-      <div class="bf-results-header">
-        <span class="bf-results-count">找到 {{ searchResults.length }} 位玩家</span>
+    <AppCard v-if="showResults" class="ui-search-results" variant="quiet" size="sm">
+      <div class="ui-results-header">
+        <span class="ui-results-count">找到 {{ searchResults.length }} 位玩家</span>
       </div>
-      <div class="bf-results-list">
+      <div class="ui-results-list">
         <div
           v-for="player in searchResults"
           :key="player.id"
-          class="bf-result-item"
+          class="ui-result-item"
           @click="goToPlayer(player)"
         >
-          <div class="bf-avatar-wrapper">
+          <div class="ui-avatar-wrapper">
             <img
               :src="getAvatarUrl(player)"
               :alt="`${player.name}'s avatar`"
-              class="bf-player-avatar"
-              :class="{ 'bf-avatar--loading': isAvatarLoading(player.id) }"
+              class="ui-player-avatar"
+              :class="{ 'ui-avatar--loading': isAvatarLoading(player.id) }"
               decoding="async"
               loading="lazy"
             />
-            <div v-if="isAvatarLoading(player.id)" class="bf-loading-indicator">
-              <div class="bf-mini-spinner"></div>
+            <div v-if="isAvatarLoading(player.id)" class="ui-loading-indicator">
+              <div class="ui-mini-spinner"></div>
             </div>
           </div>
-          <div class="bf-player-info">
-            <div class="bf-player-name-row">
-              <span class="bf-player-name" v-html="highlightMatch(player.name, searchQuery.trim())"></span>
+          <div class="ui-player-info">
+            <div class="ui-player-name-row">
+              <span class="ui-player-name" v-html="highlightMatch(player.name, searchQuery.trim())"></span>
             </div>
-            <span class="bf-player-meta">
+            <span class="ui-player-meta">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12">
                 <circle cx="12" cy="12" r="10"/>
                 <polyline points="12 6 12 12 16 14"/>
@@ -230,18 +231,18 @@ function clearSearch() {
               {{ formatLastLogin(player.lastLogin) }}
             </span>
           </div>
-          <div class="bf-player-right">
-            <span class="bf-player-uuid" v-html="highlightMatch(formatUuid(player.id), searchQuery.trim().toLowerCase())"></span>
+          <div class="ui-player-right">
+            <span class="ui-player-uuid" v-html="highlightMatch(formatUuid(player.id), searchQuery.trim().toLowerCase())"></span>
           </div>
-          <svg class="bf-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg class="ui-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M9 18l6-6-6-6"/>
           </svg>
         </div>
       </div>
-    </div>
+    </AppCard>
 
     <!-- 空状态 -->
-    <div v-if="showEmpty" class="bf-search-empty">
+    <div v-if="showEmpty" class="ui-search-empty">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
         <circle cx="11" cy="11" r="8"/>
         <path d="m21 21-4.35-4.35"/>
@@ -251,7 +252,7 @@ function clearSearch() {
     </div>
 
     <!-- 错误状态 -->
-    <div v-if="errorMsg" class="bf-search-error">
+    <div v-if="errorMsg" class="ui-search-error">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="12" cy="12" r="10"/>
         <line x1="12" y1="8" x2="12" y2="12"/>
@@ -263,304 +264,297 @@ function clearSearch() {
 </template>
 
 <style scoped>
-.bf-player-search {
+.ui-player-search {
   width: 100%;
 }
 
 /* 搜索框 */
-.bf-search-box {
-  margin-bottom: var(--bf-space-md, 16px);
+.ui-search-box {
+  margin-bottom: var(--ui-space-md);
 }
 
-.bf-search-input-wrapper {
+.ui-search-input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
 }
 
-.bf-search-icon {
+.ui-search-icon {
   position: absolute;
-  left: var(--bf-space-md, 16px);
+  left: var(--ui-space-md);
   width: 20px;
   height: 20px;
-  color: var(--bf-text-muted, #666666);
+  color: var(--ui-text-muted);
   pointer-events: none;
 }
 
-.bf-search-input {
+.ui-search-input {
   width: 100%;
-  padding: var(--bf-space-md, 16px) var(--bf-space-xl, 48px);
-  padding-left: calc(var(--bf-space-md, 16px) + 28px);
-  background: var(--bf-input-bg, rgba(255, 255, 255, 0.05));
-  border: 1px solid var(--bf-border-default, rgba(255, 255, 255, 0.1));
-  border-radius: var(--bf-input-radius, 12px);
-  color: var(--bf-text-primary, #ffffff);
+  padding: var(--ui-space-md) var(--ui-space-xl);
+  padding-left: calc(var(--ui-space-md) + 28px);
+  background: var(--ui-input-bg);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-input-radius);
+  color: var(--ui-text);
   font-size: 1rem;
-  transition: all var(--bf-transition-fast, 0.15s ease);
+  transition: var(--ui-transition-fast);
 }
 
-.bf-search-input::placeholder {
-  color: var(--bf-text-muted, #666666);
+.ui-search-input::placeholder {
+  color: var(--ui-text-muted);
 }
 
-.bf-search-input:focus {
+.ui-search-input:focus {
   outline: none;
-  border-color: var(--bf-primary, #ff6b35);
-  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15);
+  border-color: var(--ui-accent);
+  box-shadow: 0 0 0 3px var(--ui-accent-glow);
 }
 
-.bf-clear-btn {
+.ui-clear-btn {
   position: absolute;
-  right: var(--bf-space-md, 16px);
+  right: var(--ui-space-md);
   width: 20px;
   height: 20px;
   padding: 0;
   background: transparent;
   border: none;
-  color: var(--bf-text-muted, #666666);
+  color: var(--ui-text-muted);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color var(--bf-transition-fast);
+  transition: color var(--ui-transition-fast);
 }
 
-.bf-clear-btn:hover {
-  color: var(--bf-text-primary, #ffffff);
+.ui-clear-btn:hover {
+  color: var(--ui-text);
 }
 
-.bf-clear-btn svg {
+.ui-clear-btn svg {
   width: 16px;
   height: 16px;
 }
 
-.bf-search-loading {
+.ui-search-loading {
   position: absolute;
-  right: var(--bf-space-md, 16px);
+  right: var(--ui-space-md);
 }
 
-.bf-spinner {
+.ui-spinner {
   width: 18px;
   height: 18px;
-  border: 2px solid var(--bf-border-default, rgba(255, 255, 255, 0.1));
-  border-top-color: var(--bf-primary, #ff6b35);
+  border: 2px solid var(--ui-border);
+  border-top-color: var(--ui-accent);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* 搜索结果 */
-.bf-search-results {
-  background: var(--bf-surface, rgba(255, 255, 255, 0.03));
-  border: 1px solid var(--bf-border-default, rgba(255, 255, 255, 0.06));
-  border-radius: var(--bf-radius-md, 12px);
+/* 搜索结果（表面交给 AppCard 的 quiet 变体） */
+.ui-search-results {
   overflow: hidden;
 }
 
-.bf-results-header {
-  padding: var(--bf-space-sm, 12px) var(--bf-space-md, 16px);
-  background: var(--bf-surface-hover, rgba(255, 255, 255, 0.02));
-  border-bottom: 1px solid var(--bf-border-default, rgba(255, 255, 255, 0.06));
+.ui-results-header {
+  padding: var(--ui-space-sm) var(--ui-space-md);
+  background: var(--ui-surface-hover);
+  border-bottom: 1px solid var(--ui-border);
 }
 
-.bf-results-count {
+.ui-results-count {
   font-size: 0.8125rem;
-  color: var(--bf-text-muted, #666666);
+  color: var(--ui-text-muted);
 }
 
-.bf-results-list {
+.ui-results-list {
   max-height: 320px;
   overflow-y: auto;
 }
 
-.bf-result-item {
+.ui-result-item {
   display: flex;
   align-items: center;
-  gap: var(--bf-space-md, 16px);
-  padding: var(--bf-space-md, 16px);
+  gap: var(--ui-space-md);
+  padding: var(--ui-space-md);
   cursor: pointer;
-  transition: background var(--bf-transition-fast);
+  transition: background var(--ui-transition-fast);
 }
 
-.bf-result-item:hover {
-  background: var(--bf-surface-hover, rgba(255, 255, 255, 0.04));
+.ui-result-item:hover {
+  background: var(--ui-surface-hover);
 }
 
-.bf-result-item:not(:last-child) {
-  border-bottom: 1px solid var(--bf-border-subtle, rgba(255, 255, 255, 0.04));
+.ui-result-item:not(:last-child) {
+  border-bottom: 1px solid var(--ui-border-subtle);
 }
 
 /* 头像 */
-.bf-avatar-wrapper {
+.ui-avatar-wrapper {
   position: relative;
   flex-shrink: 0;
 }
 
-.bf-player-avatar {
+.ui-player-avatar {
   width: 40px;
   height: 40px;
-  border-radius: 8px;
+  border-radius: var(--ui-radius-sm);
   object-fit: cover;
-  background-color: var(--bf-bg-tertiary, rgba(255, 255, 255, 0.1));
-  transition: opacity 0.3s ease;
+  background-color: var(--ui-surface-sunken);
+  transition: opacity var(--ui-transition-normal);
 }
 
-.bf-avatar--loading {
+.ui-avatar--loading {
   opacity: 0.5;
 }
 
-.bf-loading-indicator {
+.ui-loading-indicator {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
 
-.bf-mini-spinner {
+.ui-mini-spinner {
   width: 16px;
   height: 16px;
-  border: 2px solid var(--bf-border-default, rgba(255, 255, 255, 0.1));
-  border-top-color: var(--bf-primary, #ff6b35);
+  border: 2px solid var(--ui-border);
+  border-top-color: var(--ui-accent);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 
 /* 玩家信息 */
-.bf-player-info {
+.ui-player-info {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--ui-space-1);
 }
 
-.bf-player-name-row {
+.ui-player-name-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--ui-space-2);
 }
 
-.bf-player-name {
+.ui-player-name {
   font-weight: 600;
-  color: var(--bf-text-primary, #ffffff);
+  color: var(--ui-text);
   font-size: 0.9375rem;
 }
 
 /* 高亮匹配文本 */
-:deep(.bf-highlight) {
-  background: linear-gradient(135deg, rgba(255, 107, 53, 0.3) 0%, rgba(255, 159, 28, 0.3) 100%);
-  color: var(--bf-primary, #ff6b35);
+:deep(.ui-highlight) {
+  background: var(--ui-accent-glow);
+  color: var(--ui-text-accent);
   padding: 1px 4px;
-  border-radius: 4px;
+  border-radius: var(--ui-radius-sm);
   font-weight: 700;
 }
 
-.bf-player-meta {
+.ui-player-meta {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--ui-space-1);
   font-size: 0.75rem;
-  color: var(--bf-text-muted, #666666);
+  color: var(--ui-text-muted);
 }
 
 /* 右侧信息 */
-.bf-player-right {
+.ui-player-right {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 4px;
+  gap: var(--ui-space-1);
   flex-shrink: 0;
 }
 
-.bf-player-uuid {
+.ui-player-uuid {
   font-size: 0.6875rem;
   font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
-  color: var(--bf-text-muted, #666666);
-  background: var(--bf-surface, rgba(255, 255, 255, 0.03));
+  color: var(--ui-text-muted);
+  background: var(--ui-surface-glass);
   padding: 2px 6px;
-  border-radius: 4px;
+  border-radius: var(--ui-radius-sm);
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
 
-.bf-arrow-icon {
+.ui-arrow-icon {
   width: 16px;
   height: 16px;
-  color: var(--bf-text-muted, #666666);
+  color: var(--ui-text-muted);
   flex-shrink: 0;
   opacity: 0;
   transform: translateX(-4px);
-  transition: all var(--bf-transition-fast);
+  transition: all var(--ui-transition-fast);
 }
 
-.bf-result-item:hover .bf-arrow-icon {
+.ui-result-item:hover .ui-arrow-icon {
   opacity: 1;
   transform: translateX(0);
-  color: var(--bf-primary, #ff6b35);
+  color: var(--ui-text-accent);
 }
 
 /* 空状态 */
-.bf-search-empty {
+.ui-search-empty {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--bf-space-sm, 8px);
-  padding: var(--bf-space-xl, 32px);
-  color: var(--bf-text-muted, #666666);
+  gap: var(--ui-space-sm);
+  padding: var(--ui-space-xl);
+  color: var(--ui-text-muted);
 }
 
-.bf-search-empty svg {
+.ui-search-empty svg {
   width: 48px;
   height: 48px;
   opacity: 0.5;
 }
 
-.bf-search-empty p {
+.ui-search-empty p {
   margin: 0;
   font-size: 0.875rem;
 }
 
 /* 错误状态 */
-.bf-search-error {
+.ui-search-error {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--bf-space-sm, 8px);
-  padding: var(--bf-space-xl, 32px);
-  color: #ef4444;
+  gap: var(--ui-space-sm);
+  padding: var(--ui-space-xl);
+  color: var(--ui-danger);
 }
 
-.bf-search-error svg {
+.ui-search-error svg {
   width: 32px;
   height: 32px;
 }
 
-.bf-search-error p {
+.ui-search-error p {
   margin: 0;
   font-size: 0.875rem;
 }
 
 /* 响应式 */
 @media (max-width: 640px) {
-  .bf-search-input {
-    padding: var(--bf-space-sm, 12px) var(--bf-space-md, 16px);
-    padding-left: calc(var(--bf-space-sm, 12px) + 28px);
+  .ui-search-input {
+    padding: var(--ui-space-sm) var(--ui-space-md);
+    padding-left: calc(var(--ui-space-sm) + 28px);
     font-size: 0.9375rem;
   }
 
-  .bf-result-item {
-    padding: var(--bf-space-sm, 12px) var(--bf-space-md, 16px);
+  .ui-result-item {
+    padding: var(--ui-space-sm) var(--ui-space-md);
   }
 
-  .bf-player-avatar {
+  .ui-player-avatar {
     width: 36px;
     height: 36px;
   }
 
-  .bf-player-right {
+  .ui-player-right {
     display: none;
   }
 }

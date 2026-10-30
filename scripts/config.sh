@@ -74,6 +74,16 @@ case "$CMD" in
     check_one "PAGES_PROJECT"   "${PAGES_PROJECT:-}"   '^[a-z0-9-]+$'           '只能是小写字母、数字、连字符'
     check_one "API_HOST"        "${API_HOST:-}"        '^([a-z0-9-]+\.)+[a-z]{2,}$' '应该是域名，例如 api.example.com'
     check_one "PLUGIN_API_BASE_URL" "${PLUGIN_API_BASE_URL:-}" '^https?://'  '应该是 http(s) 地址'
+    # 界面主题：必须是已登记的主题 id
+    UI_THEME_LOWER="$(printf '%s' "${UI_THEME:-}" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')"
+    if [ -z "$UI_THEME_LOWER" ]; then
+      ok "UI_THEME = (未设置) → ${DEFAULT_UI_THEME}"
+    elif printf '%s\n' $UI_THEMES | grep -qx "$UI_THEME_LOWER"; then
+      ok "UI_THEME = $UI_THEME_LOWER"
+    else
+      warn "UI_THEME = ${UI_THEME:-} 不是已知主题（可选：${UI_THEMES// /, }）→ 构建时会退回 ${DEFAULT_UI_THEME}"
+      PROBLEMS=$((PROBLEMS + 1))
+    fi
     if printf '%s' "${TURNSTILE_SITE_KEY:-}" | grep -q '0x4xxxxxxx'; then
       warn "TURNSTILE_SITE_KEY 还是占位符 → 本次构建不启用人机验证"
     elif [ -n "${TURNSTILE_SITE_KEY:-}" ]; then

@@ -32,6 +32,26 @@ note() { printf "  %s%s%s\n" "$C_DIM" "$*" "$C_RESET"; }
 
 require_cmd() { command -v "$1" >/dev/null 2>&1 || die "缺少命令：$1（$2）"; }
 
+# 可用的界面主题（构建期由 config.env 的 UI_THEME 指定）
+# 与 frontend/src/shared/config/theme.ts 的 THEME_REGISTRY 保持一致
+UI_THEMES="liquid-glass memphis"
+DEFAULT_UI_THEME="memphis"
+
+# 校验 UI_THEME；不合法就退回默认主题并提示
+resolve_ui_theme() {
+  local t="${UI_THEME:-}"
+  t="$(printf '%s' "$t" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')"
+  if [ -z "$t" ]; then
+    printf '%s' "$DEFAULT_UI_THEME"
+    return 0
+  fi
+  for known in $UI_THEMES; do
+    [ "$t" = "$known" ] && { printf '%s' "$t"; return 0; }
+  done
+  warn "UI_THEME=${UI_THEME} 不是已知主题（可选：${UI_THEMES// /, }）→ 退回 ${DEFAULT_UI_THEME}"
+  printf '%s' "$DEFAULT_UI_THEME"
+}
+
 ask_yes_no() {
   local prompt="$1" reply
   printf "  %s%s [y/N] %s" "$C_B" "$prompt" "$C_RESET"

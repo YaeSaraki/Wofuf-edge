@@ -6,8 +6,7 @@ import { useLocale } from '@S/services/i18n/useLocale.ts'
 import { hasTranslation } from '@S/services/i18n/index.ts'
 import { statisticService } from '@M/players/services'
 import type { PlayerStatisticList } from '@M/players/dtos/PlayerStatistic.ts'
-
-import './styles'
+import AppCard from '@S/components/ui/AppCard.vue'
 
 const props = defineProps<{ playerUuid: string }>()
 
@@ -124,18 +123,18 @@ const getStatsByGroup = (groupId: string) => {
 }
 </script>
 <template>
-  <div class="bf-statistics-panel">
-    <div class="bf-panel-header">
-      <h3 class="bf-panel-title">
+  <AppCard class="ui-statistics-panel" variant="default" size="md">
+    <div class="ui-panel-header">
+      <h3 class="ui-panel-title">
         {{ translate('players', 'stats.title') }}
       </h3>
       <button
         @click="useConvertedUnits = !useConvertedUnits"
-        class="bf-toggle-btn"
+        class="ui-toggle-btn"
       >
         <svg
           v-if="!useConvertedUnits"
-          class="bf-icon"
+          class="ui-icon"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -155,7 +154,7 @@ const getStatsByGroup = (groupId: string) => {
         </svg>
         <svg
           v-else
-          class="bf-icon"
+          class="ui-icon"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -177,14 +176,14 @@ const getStatsByGroup = (groupId: string) => {
 
     <div
       v-if="isLoading"
-      class="bf-loading-container"
+      class="ui-loading-container"
     >
-      <div class="bf-spinner"></div>
+      <div class="ui-spinner"></div>
     </div>
 
     <div
       v-else-if="errorMsg"
-      class="bf-error-message"
+      class="ui-error-message"
     >
       {{ errorMsg }}
     </div>
@@ -192,45 +191,49 @@ const getStatsByGroup = (groupId: string) => {
     <div v-else>
       <!-- 分组统计概览 - 固定大小 Flex 布局（每行对齐） -->
       <div class="mb-6">
-        <h4 class="bf-section-subtitle">
+        <h4 class="ui-section-subtitle">
           {{ translate('players', 'stats.overview') }}
         </h4>
-        <div class="bf-stats-overview">
-          <div
+        <div class="ui-stats-overview">
+          <AppCard
             v-for="group in groupedStats"
             :key="group.category"
-            class="bf-stat-card bf-stat-card--primary"
+            class="ui-stat-card"
+            variant="accent"
+            size="sm"
           >
-            <div class="bf-stat-label">
+            <div class="ui-stat-label">
               {{ translate('players', `stats.group.${group.category.toLowerCase()}`) }}
             </div>
-            <div class="bf-stat-value">
+            <div class="ui-stat-value">
               {{ useConvertedUnits ? formatValue(group.total, group.category) : group.total }}
             </div>
-          </div>
+          </AppCard>
         </div>
       </div>
 
       <!-- 详细统计分组展示-->
-      <div class="bf-stats-groups">
-        <div
+      <div class="ui-stats-groups">
+        <AppCard
           v-for="group in statisticGroups"
           :key="group.category"
-          class="bf-stat-group"
+          class="ui-stat-group"
+          variant="quiet"
+          size="sm"
         >
-          <h4 class="bf-group-header">
-            <span class="bf-group-indicator bf-group-indicator--primary"></span>
+          <h4 class="ui-group-header">
+            <span class="ui-group-indicator ui-group-indicator--primary"></span>
             {{ translate('players', `stats.group.${group.category.toLowerCase()}`) }}
           </h4>
 
-          <div class="bf-stat-items">
+          <div class="ui-stat-items">
             <div
               v-for="stat in getStatsByGroup(group.category)"
               :key="stat.key"
-              class="bf-stat-item"
+              class="ui-stat-item"
             >
-              <span class="bf-stat-item-label">{{ stat.translatedKey }}</span>
-              <span class="bf-stat-item-value">{{
+              <span class="ui-stat-item-label">{{ stat.translatedKey }}</span>
+              <span class="ui-stat-item-value">{{
                 formatValue(stat.value, stat.key)
               }}</span>
             </div>
@@ -239,192 +242,168 @@ const getStatsByGroup = (groupId: string) => {
           <!-- 无数据提示 -->
           <div
             v-if="getStatsByGroup(group.category).length === 0"
-            class="bf-no-data"
+            class="ui-no-data"
           >
             {{ translate('players', 'stats.no-data') }}
           </div>
-        </div>
+        </AppCard>
       </div>
 
       <!-- 其他未分组统计-->
-      <div
+      <AppCard
         v-if="otherStats.length > 0"
-        class="bf-other-stats"
+        class="ui-other-stats"
+        variant="quiet"
+        size="sm"
       >
-        <h4 class="bf-group-header">
-          <span class="bf-group-indicator bf-group-indicator--secondary"></span>
+        <h4 class="ui-group-header">
+          <span class="ui-group-indicator ui-group-indicator--secondary"></span>
           {{ translate('players', 'stats.other') }}
         </h4>
 
-        <div class="bf-stat-items">
+        <div class="ui-stat-items">
           <div
             v-for="stat in otherStats"
             :key="stat.key"
-            class="bf-stat-item"
+            class="ui-stat-item"
           >
-            <span class="bf-stat-item-label">{{ stat.translatedKey }}</span>
-            <span class="bf-stat-item-value">{{
+            <span class="ui-stat-item-label">{{ stat.translatedKey }}</span>
+            <span class="ui-stat-item-value">{{
               formatValue(stat.value, stat.key)
             }}</span>
           </div>
         </div>
-      </div>
+      </AppCard>
     </div>
-  </div>
+  </AppCard>
 </template>
 
 <style scoped>
-.bf-statistics-panel {
-  background: var(--bf-card-bg);
-  border-radius: var(--bf-radius-lg);
-  box-shadow: var(--bf-shadow-sm);
-  padding: var(--bf-space-4);
+/* 面板根节点（表面交给 AppCard，这里只管排版） */
+.ui-statistics-panel {
   display: flex;
   flex-direction: column;
-  gap: var(--bf-space-4);
+  gap: var(--ui-space-4);
 }
 
-.bf-panel-header {
+.ui-panel-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--bf-space-4);
+  margin-bottom: var(--ui-space-4);
 }
 
-.bf-panel-title {
+.ui-panel-title {
   font-weight: bold;
   font-size: 1.125rem;
-  color: var(--bf-text-primary);
+  color: var(--ui-text);
 }
 
-.bf-toggle-btn {
+.ui-toggle-btn {
   display: flex;
   align-items: center;
-  gap: var(--bf-space-2);
+  gap: var(--ui-space-2);
   padding: 0.375rem 0.75rem;
   font-size: 0.875rem;
-  background: var(--bf-surface-hover);
-  border-radius: var(--bf-radius-md);
-  border: 1px solid var(--bf-border);
-  color: var(--bf-text-secondary);
-  transition: all 0.2s ease;
+  background: var(--ui-surface-hover);
+  border-radius: var(--ui-radius-md);
+  border: 1px solid var(--ui-border);
+  color: var(--ui-text-secondary);
+  transition: var(--ui-transition-fast);
   cursor: pointer;
 }
 
-.bf-toggle-btn:hover {
-  background: var(--bf-surface-active);
+.ui-toggle-btn:hover {
+  background: var(--ui-surface-active);
 }
 
-.bf-icon {
+.ui-icon {
   width: 1rem;
   height: 1rem;
 }
 
-.bf-loading-container {
+.ui-loading-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 10rem;
-  background: var(--bf-surface);
-  border-radius: var(--bf-radius-md);
+  background: var(--ui-surface-glass);
+  border-radius: var(--ui-radius-md);
 }
 
-.bf-spinner {
+.ui-spinner {
   animation: spin 1s linear infinite;
   height: 2rem;
   width: 2rem;
   border-radius: 50%;
-  border: 2px solid var(--bf-primary);
+  border: 2px solid var(--ui-accent);
   border-top-color: transparent;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.bf-error-message {
+.ui-error-message {
   text-align: center;
-  color: var(--bf-danger);
-  padding: var(--bf-space-4);
-  background: color-mix(in srgb, var(--bf-danger) 10%, transparent);
-  border-radius: var(--bf-radius-md);
+  color: var(--ui-danger);
+  padding: var(--ui-space-4);
+  background: color-mix(in srgb, var(--ui-danger) 10%, transparent);
+  border-radius: var(--ui-radius-md);
 }
 
-.bf-section-subtitle {
+.ui-section-subtitle {
   font-weight: 600;
   font-size: 0.875rem;
-  color: var(--bf-text-secondary);
-  margin-bottom: var(--bf-space-2);
+  color: var(--ui-text-secondary);
+  margin-bottom: var(--ui-space-2);
 }
 
-.bf-stats-overview {
+.ui-stats-overview {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--bf-space-3);
+  gap: var(--ui-space-3);
 }
 
-.bf-stat-card {
-  padding: var(--bf-space-3);
-  border-radius: var(--bf-radius-md);
-  border: 1px solid var(--bf-border);
-}
-
-.bf-stat-card--primary {
-  background: var(--bf-gradient-primary);
-}
-
-.bf-stat-label {
+.ui-stat-label {
   font-size: 0.75rem;
-  color: var(--bf-primary);
+  color: var(--ui-text-accent);
   margin-bottom: 0.25rem;
 }
 
-.bf-stat-value {
+.ui-stat-value {
   font-size: 1.25rem;
   font-weight: bold;
-  color: var(--bf-text-primary);
+  color: var(--ui-text);
 }
 
-.bf-stats-groups {
+.ui-stats-groups {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-.bf-stat-group {
-  background: var(--bf-surface-hover);
-  border-radius: var(--bf-radius-md);
-  padding: var(--bf-space-3);
-  border: 1px solid var(--bf-border);
-}
-
-.bf-group-header {
+.ui-group-header {
   font-weight: 600;
   font-size: 0.875rem;
-  color: var(--bf-text-secondary);
-  margin-bottom: var(--bf-space-3);
+  color: var(--ui-text-secondary);
+  margin-bottom: var(--ui-space-3);
   display: flex;
   align-items: center;
 }
 
-.bf-group-indicator {
+.ui-group-indicator {
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 50%;
-  margin-right: var(--bf-space-2);
+  margin-right: var(--ui-space-2);
 }
 
-.bf-group-indicator--primary {
-  background: var(--bf-primary);
+.ui-group-indicator--primary {
+  background: var(--ui-accent);
 }
 
-.bf-group-indicator--secondary {
-  background: var(--bf-text-muted);
+.ui-group-indicator--secondary {
+  background: var(--ui-text-muted);
 }
 
-.bf-stat-items {
+.ui-stat-items {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
@@ -433,45 +412,41 @@ const getStatsByGroup = (groupId: string) => {
   align-content: flex-start;
 }
 
-.bf-stat-item {
+.ui-stat-item {
   width: 220px;
   height: 45px;
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem;
-  border-radius: var(--bf-radius-sm);
-  transition: all 0.2s ease;
+  padding: var(--ui-space-2);
+  border-radius: var(--ui-radius-sm);
+  transition: var(--ui-transition-fast);
 }
 
-.bf-stat-item:hover {
-  background: var(--bf-surface-active);
+.ui-stat-item:hover {
+  background: var(--ui-surface-active);
 }
 
-.bf-stat-item-label {
+.ui-stat-item-label {
   font-size: 0.875rem;
-  color: var(--bf-text-secondary);
+  color: var(--ui-text-secondary);
 }
 
-.bf-stat-item-value {
+.ui-stat-item-value {
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--bf-text-primary);
+  color: var(--ui-text);
 }
 
-.bf-no-data {
+.ui-no-data {
   font-size: 0.875rem;
-  color: var(--bf-text-muted);
+  color: var(--ui-text-muted);
   font-style: italic;
-  padding: var(--bf-space-2) 0;
+  padding: var(--ui-space-2) 0;
 }
 
-.bf-other-stats {
+.ui-other-stats {
   margin-top: 1.5rem;
-  background: var(--bf-surface);
-  border-radius: var(--bf-radius-md);
-  padding: var(--bf-space-3);
-  border: 1px solid var(--bf-border);
 }
 </style>

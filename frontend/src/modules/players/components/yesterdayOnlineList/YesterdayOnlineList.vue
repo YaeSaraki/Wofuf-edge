@@ -7,6 +7,7 @@ import { translate } from '@S/services/i18n'
 import router from '@S/infra/router'
 import { renderAvatar } from '@SU/renderUTil.ts'
 import { addImagePrefixToBase64 } from '@SU/Base64Util.ts'
+import AppCard from '@S/components/ui/AppCard.vue'
 
 /* ---------------- 复用通用加载逻辑 ---------------- */
 const { isLoading, errorMsg, executeAsync } = useAsyncLoader()
@@ -126,173 +127,128 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="bf-yesterday-online">
-    <h2 class="bf-title">{{ translate('players', 'yesterday_online_players') }}</h2>
+  <section class="ui-yesterday-online">
+    <!-- 标题由外层 section 提供（status.section.yesterdayOnline），
+         这里再写一遍就会和主页那个标题重复，所以不再重复输出。 -->
 
-    <div v-if="isLoading" class="bf-hint">
+    <div v-if="isLoading" class="ui-hint">
       {{ translate('players', 'loading-yesterday-online') }}
     </div>
 
-    <div v-else-if="errorMsg" class="bf-hint bf-hint--error">
+    <div v-else-if="errorMsg" class="ui-hint ui-hint--error">
       <p>{{ errorMsg }}</p>
-      <button class="bf-btn bf-btn--primary" @click="loadYesterdayOnlinePlayers">
+      <button class="ui-btn ui-btn--primary" @click="loadYesterdayOnlinePlayers">
         {{ translate('app', 'actions.retry') }}
       </button>
     </div>
     <!-- 只有一个人时也要显示：之前这里写的是 `length === 1` 渲染空 div，
          结果「昨日在线恰好只有一个人」时整张列表被吞掉。 -->
-    <div v-else-if="!playerNameList?.playerNames?.length" class="bf-hint">
+    <div v-else-if="!playerNameList?.playerNames?.length" class="ui-hint">
       {{ translate('players', 'yesterday-online-empty') }}
     </div>
-    <div v-else class="bf-card-list">
-      <div
+    <div v-else class="ui-card-list">
+      <AppCard
         v-for="item in playerNameList?.playerNames"
         :key="item"
-        class="bf-player-card"
+        class="ui-player-card"
+        variant="default"
+        size="sm"
+        interactive
         @click="goToPlayerProfile(item)"
       >
-        <div class="bf-avatar-wrapper">
+        <div class="ui-avatar-wrapper">
           <img
             :alt="`${item}'s avatar`"
-            :class="{ 'bf-avatar--loading': isAvatarLoading(item) }"
+            :class="{ 'ui-avatar--loading': isAvatarLoading(item) }"
             :src="getAvatarUrl(item)"
-            class="bf-avatar"
+            class="ui-avatar"
             decoding="async"
             loading="lazy"
           />
-          <div v-if="isAvatarLoading(item)" class="bf-loading-indicator">
-            <div class="bf-loading-spinner"></div>
+          <div v-if="isAvatarLoading(item)" class="ui-loading-indicator">
+            <div class="ui-loading-spinner"></div>
           </div>
         </div>
-        <div class="bf-name">{{ item }}</div>
-      </div>
+        <div class="ui-name">{{ item }}</div>
+      </AppCard>
     </div>
   </section>
 </template>
 
 <style scoped>
-.bf-yesterday-online {
-  padding: var(--bf-space-lg, 24px);
+.ui-yesterday-online {
+  padding: var(--ui-space-lg, 24px);
 }
 
-.bf-title {
-  font-size: 18px;
-  margin-bottom: var(--bf-space-md, 16px);
-  font-weight: 600;
-  color: var(--bf-text-primary);
-  text-align: center;
-}
-
-.bf-hint {
-  color: var(--bf-text-muted);
+.ui-hint {
+  color: var(--ui-text-muted);
   font-size: 14px;
   padding: 20px;
   text-align: center;
 }
 
-.bf-hint--error {
+.ui-hint--error {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--bf-space-md, 16px);
+  gap: var(--ui-space-md, 16px);
 }
 
-.bf-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--bf-space-sm, 8px) var(--bf-space-md, 16px);
-  border-radius: var(--bf-btn-radius, 12px);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  border: none;
-  transition: all var(--bf-transition-fast, 0.15s ease);
-}
-
-.bf-btn--primary {
-  background: var(--bf-btn-primary-bg);
-  color: white;
-}
-
-.bf-btn--primary:hover {
-  background: var(--bf-btn-primary-hover);
-  box-shadow: 0 4px 16px var(--bf-primary-glow);
-}
-
-.bf-card-list {
+.ui-card-list {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 20px;
-  margin: 0 var(--bf-space-md, 16px);
+  margin: 0 var(--ui-space-md, 16px);
 }
 
-.bf-player-card {
-  background: var(--bf-card-bg);
-  border: 1px solid var(--bf-card-border);
-  border-radius: var(--bf-card-radius-sm, 12px);
-  padding: var(--bf-space-md, 16px) 12px;
+/* 玩家小卡（表面交给 AppCard，这里只管排版） */
+.ui-player-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: all var(--bf-transition-fast, 0.15s ease);
   position: relative;
   width: 100px;
-  cursor: pointer;
-  box-shadow: var(--bf-card-shadow);
 }
 
-.bf-player-card:hover {
-  transform: translateY(-2px);
-  border-color: var(--bf-border-accent);
-  box-shadow: var(--bf-card-shadow-hover);
-}
-
-.bf-avatar-wrapper {
+.ui-avatar-wrapper {
   position: relative;
-  margin-bottom: var(--bf-space-sm, 8px);
+  margin-bottom: var(--ui-space-sm, 8px);
 }
 
-.bf-avatar {
-  border-radius: 10px;
+.ui-avatar {
+  border-radius: var(--ui-radius-md);
   width: 64px;
   height: 64px;
   object-fit: cover;
-  background-color: var(--bf-bg-tertiary);
-  transition: opacity 0.3s ease;
+  background-color: var(--ui-surface-sunken);
+  transition: opacity var(--ui-transition-normal);
 }
 
-.bf-avatar--loading {
+.ui-avatar--loading {
   opacity: 0.5;
 }
 
-.bf-loading-indicator {
+.ui-loading-indicator {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
 
-.bf-loading-spinner {
+.ui-loading-spinner {
   width: 24px;
   height: 24px;
-  border: 2px solid var(--bf-border-default);
-  border-top-color: var(--bf-primary);
+  border: 2px solid var(--ui-border);
+  border-top-color: var(--ui-accent);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.bf-name {
+.ui-name {
   font-size: 12px;
   font-weight: 500;
-  color: var(--bf-text-primary);
+  color: var(--ui-text);
   text-align: center;
   max-width: 80px;
   overflow: hidden;
@@ -301,16 +257,15 @@ onMounted(() => {
 }
 
 @media (max-width: 640px) {
-  .bf-card-list {
+  .ui-card-list {
     gap: 12px;
   }
 
-  .bf-player-card {
+  .ui-player-card {
     width: 88px;
-    padding: 12px 8px;
   }
 
-  .bf-avatar {
+  .ui-avatar {
     width: 56px;
     height: 56px;
   }

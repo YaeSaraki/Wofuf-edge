@@ -14,11 +14,15 @@ set -euo pipefail
 load_config
 require_cmd node "需要 Node.js"
 
+# 主题：先校验再用，免得前端构建出一个白屏站点
+UI_THEME_RESOLVED="$(resolve_ui_theme)"
+
 step "1/4 读取配置"
 sub "站点      ${SERVER_NAME:-MCS}（${SERVER_CORE:-?} ${SERVER_VERSION:-?}）"
 sub "Worker    ${WORKER_NAME:-?}    API: ${API_HOST:-未配置}"
 sub "前端      ${PAGES_PROJECT:-?}    ${PAGES_HOST:-未配置}"
 sub "插件      ${PLUGIN_API_BASE_URL:-未配置}"
+sub "主题      ${UI_THEME_RESOLVED}（可选：${UI_THEMES// /, }）"
 if [ -n "${TURNSTILE_SITE_KEY:-}" ] && [ "${TURNSTILE_SITE_KEY}" != "0x4xxxxxxx" ]; then
   sub "Turnstile ${TURNSTILE_SITE_KEY:0:10}…（启用）"
 else
@@ -70,6 +74,7 @@ else
   VITE_SERVER_VERSION="${SERVER_VERSION:-26.3}" \
   VITE_SERVER_FOUNDED="${SERVER_FOUNDED:-2024}" \
   VITE_SERVER_INTRO="${SERVER_INTRO:-}" \
+  VITE_UI_THEME="$UI_THEME_RESOLVED" \
     npm run build >/dev/null 2>&1 || die "前端构建失败"
 
   # 前端产物收进 deploy/web/（部署只认 deploy/ 目录，结构统一）

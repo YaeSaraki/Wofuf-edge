@@ -417,7 +417,7 @@ onUnmounted(() => {
     v-if="!isMobile"
     ref="popupMenuRef"
     :style="menuStyle"
-    class="floating-menu select-none flex fixed z-9999"
+    class="floating-menu ui-nav-surface select-none flex fixed z-9999"
     @mouseenter="showButton"
     @mouseleave="startHideTimer"
     @click.stop="handleMenuClick"
@@ -427,7 +427,7 @@ onUnmounted(() => {
       @mousedown="handleDragStart"
       @touchstart="handleDragStart"
     >
-      <span class="logo font-bold boder-none text-zinc-800 dark:text-white">{{ siteConfig.name }}</span>
+      <span class="logo font-bold boder-none">{{ siteConfig.name }}</span>
     </span>
 
     <button
@@ -437,7 +437,7 @@ onUnmounted(() => {
       title="Reset to center"
       @click.stop="resetMenuPosition"
     >
-      <svg class="w-4 h-4 text-zinc-500 dark:text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="w-4 h-4 reset-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
       </svg>
     </button>
@@ -447,7 +447,7 @@ onUnmounted(() => {
 
   <!-- 移动端/平板：底部抽屉导航栏 (可上下拖动) -->
   <nav v-else ref="drawerRef" class="drawer-nav fixed bottom-0 left-0 right-0 z-9999" :style="drawerStyle">
-    <div class="drawer-blur" />
+    <div class="drawer-blur ui-nav-surface ui-nav-surface--top" />
     <div class="drawer-content">
       <!-- 拖拽手柄 -->
       <div
@@ -485,7 +485,7 @@ onUnmounted(() => {
 
   <!-- 设置浮动按钮 (所有设备) - 液态玻璃效果 -->
   <button
-    class="settings-fab"
+    class="settings-fab ui-nav-surface"
     :style="settingsBallStyle"
     @mousedown="handleSettingsBallDragStart"
     @touchstart.passive="handleSettingsBallDragStart"
@@ -582,53 +582,23 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-/* ===== 桌面端浮动菜单 - 液态玻璃效果 ===== */
+/* ===== 桌面端浮动菜单 ===== */
+/* 表面（背景/描边/阴影/毛玻璃）由 .ui-nav-surface 提供，主题可换 */
 .floating-menu {
   border-radius: 1rem;
-  /* 液态玻璃效果 - 使用全局变量 */
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.35) 0%,
-    rgba(255, 255, 255, 0.25) 50%,
-    rgba(255, 255, 255, 0.35) 100%
-  ) !important;
-  backdrop-filter: blur(24px) saturate(200%);
-  -webkit-backdrop-filter: blur(24px) saturate(200%);
-  border: 1px solid var(--bf-border-default, rgba(255, 255, 255, 0.4));
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.12),
-    0 2px 8px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.2);
-}
-
-html.dark .floating-menu {
-  background: linear-gradient(
-    135deg,
-    rgba(70, 70, 80, 0.45) 0%,
-    rgba(60, 60, 67, 0.4) 50%,
-    rgba(70, 70, 80, 0.45) 100%
-  ) !important;
-  border: 1px solid var(--bf-border-default, rgba(255, 255, 255, 0.18));
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.35),
-    0 2px 8px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .reset-btn {
   border-radius: 0.75rem;
-  background: var(--bf-surface, rgba(255, 255, 255, 0.25));
+  background: var(--ui-surface-glass);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid var(--bf-border-default, rgba(255, 255, 255, 0.3));
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--ui-border);
+  box-shadow: var(--ui-shadow-md);
 }
 
-html.dark .reset-btn {
-  background: var(--bf-surface, rgba(60, 60, 67, 0.4));
-  border: 1px solid var(--bf-border-default, rgba(255, 255, 255, 0.15));
+.reset-icon {
+  color: var(--ui-text-muted);
 }
 
 .cursor-move { cursor: move; }
@@ -636,7 +606,7 @@ html.dark .reset-btn {
 
 /* Logo 样式 */
 .logo {
-  background: var(--bf-fire-gradient);
+  background: var(--ui-accent-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -651,38 +621,9 @@ html.dark .reset-btn {
 .drawer-blur {
   position: absolute;
   inset: 0;
-  /* 液态玻璃效果 - 使用全局变量 */
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.35) 0%,
-    rgba(255, 255, 255, 0.25) 50%,
-    rgba(255, 255, 255, 0.35) 100%
-  );
-  backdrop-filter: blur(24px) saturate(200%);
-  -webkit-backdrop-filter: blur(24px) saturate(200%);
-  border: none;
-  border-top: 1px solid var(--bf-border-default, rgba(255, 255, 255, 0.4));
   border-radius: 24px 24px 0 0;
-  box-shadow:
-    0 -8px 32px rgba(0, 0, 0, 0.12),
-    0 -2px 8px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5);
   /* 裁剪圆角，防止四角阴影 */
   clip-path: inset(0 0 0 0 round 24px 24px 0 0);
-}
-
-html.dark .drawer-blur {
-  background: linear-gradient(
-    180deg,
-    rgba(70, 70, 80, 0.45) 0%,
-    rgba(60, 60, 67, 0.4) 50%,
-    rgba(70, 70, 80, 0.45) 100%
-  );
-  border-top: 1px solid var(--bf-border-default, rgba(255, 255, 255, 0.18));
-  box-shadow:
-    0 -8px 32px rgba(0, 0, 0, 0.35),
-    0 -2px 8px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .drawer-content {
@@ -706,12 +647,8 @@ html.dark .drawer-blur {
 .drawer-handle {
   width: 36px;
   height: 5px;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--ui-text-faint);
   border-radius: 2.5px;
-}
-
-html.dark .drawer-handle {
-  background: rgba(255, 255, 255, 0.25);
 }
 
 .nav-items {
@@ -730,18 +667,14 @@ html.dark .drawer-handle {
   padding: 8px 16px;
   border-radius: 16px;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  color: var(--bf-text-secondary);
+  color: var(--ui-text-secondary);
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
 }
 
-html.dark .nav-item {
-  color: var(--bf-text-secondary);
-}
-
 .nav-item.active {
-  color: var(--bf-primary);
-  background: var(--bf-fire-gradient-subtle);
+  color: var(--ui-accent);
+  background: var(--ui-accent-gradient-subtle);
 }
 
 .nav-item:active {
@@ -766,11 +699,11 @@ html.dark .nav-item {
   font-weight: 500;
   letter-spacing: -0.01em;
   margin-top: 4px;
-  color: var(--bf-text-secondary);
+  color: var(--ui-text-secondary);
 }
 
 .nav-item.active .nav-label {
-  color: var(--bf-primary);
+  color: var(--ui-accent);
 }
 
 /* ===== 设置浮动按钮 - 液态玻璃效果 ===== */
@@ -788,54 +721,12 @@ html.dark .nav-item {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   touch-action: none;
 
-  /* 液态玻璃效果 - 使用全局变量 */
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.35) 0%,
-    rgba(255, 255, 255, 0.25) 50%,
-    rgba(255, 255, 255, 0.35) 100%
-  );
-  backdrop-filter: blur(24px) saturate(200%);
-  -webkit-backdrop-filter: blur(24px) saturate(200%);
   -webkit-appearance: none;
-  border: 1px solid var(--bf-border-default, rgba(255, 255, 255, 0.4));
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.12),
-    0 2px 8px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.2);
-}
-
-html.dark .settings-fab {
-  background: linear-gradient(
-    135deg,
-    rgba(70, 70, 80, 0.45) 0%,
-    rgba(60, 60, 67, 0.4) 50%,
-    rgba(70, 70, 80, 0.45) 100%
-  );
-  border: 1px solid var(--bf-border-default, rgba(255, 255, 255, 0.18));
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.35),
-    0 2px 8px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .settings-fab:hover {
   transform: scale(1.08);
-  box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.18),
-    0 4px 12px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.3);
-}
-
-html.dark .settings-fab:hover {
-  box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.45),
-    0 4px 12px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow: var(--ui-nav-shadow);
 }
 
 .settings-fab:active {
@@ -845,7 +736,7 @@ html.dark .settings-fab:hover {
 .fab-inner {
   width: 24px;
   height: 24px;
-  color: var(--bf-text-primary);
+  color: var(--ui-text);
   transition: color 0.2s ease;
 }
 
@@ -874,12 +765,8 @@ html.dark .settings-fab:hover {
 .popup-drag-handle {
   width: 36px;
   height: 5px;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--ui-text-faint);
   border-radius: 2.5px;
-}
-
-html.dark .popup-drag-handle {
-  background: rgba(255, 255, 255, 0.25);
 }
 
 .popup-title {
@@ -887,8 +774,8 @@ html.dark .popup-drag-handle {
   padding: 0 16px 12px;
   font-size: 1.125rem;
   font-weight: 600;
-  color: var(--bf-text-primary);
-  border-bottom: 0.5px solid var(--bf-border-default);
+  color: var(--ui-text);
+  border-bottom: 0.5px solid var(--ui-border);
   margin: 0 16px;
 }
 
@@ -899,7 +786,7 @@ html.dark .popup-drag-handle {
 .section-label {
   font-size: 0.75rem;
   font-weight: 500;
-  color: var(--bf-text-muted);
+  color: var(--ui-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.02em;
   margin-bottom: 8px;
@@ -917,7 +804,7 @@ html.dark .popup-drag-handle {
   flex-direction: column;
   align-items: center;
   padding: 12px 8px;
-  background: var(--bf-surface-active);
+  background: var(--ui-surface-active);
   border: none;
   border-radius: 12px;
   cursor: pointer;
@@ -931,8 +818,8 @@ html.dark .popup-drag-handle {
 }
 
 .option-btn.active {
-  background: var(--bf-fire-gradient-subtle);
-  border: 1px solid var(--bf-border-accent);
+  background: var(--ui-accent-gradient-subtle);
+  border: 1px solid var(--ui-border-accent);
 }
 
 .option-flag {
@@ -943,14 +830,14 @@ html.dark .popup-drag-handle {
 .option-text {
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--bf-text-primary);
+  color: var(--ui-text);
 }
 
 .check-icon {
   position: absolute;
   top: 6px;
   right: 6px;
-  color: var(--bf-primary);
+  color: var(--ui-accent);
   font-size: 0.75rem;
   font-weight: 600;
 }
@@ -967,11 +854,15 @@ html.dark .popup-drag-handle {
   flex-direction: column;
   align-items: center;
   padding: 10px 6px;
-  background: var(--bf-surface-active);
+  background: var(--ui-surface-active);
   border: 1px solid transparent;
-  border-radius: 12px;
+  border-radius: var(--ui-radius-md);
   cursor: pointer;
-  transition: all 0.15s ease;
+  /* 状态切换用跳切：干脆落到完成态，不拖泥带水 */
+  transition:
+    background var(--ui-transition-step),
+    border-color var(--ui-transition-step),
+    transform var(--ui-transition-fast);
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -980,41 +871,41 @@ html.dark .popup-drag-handle {
 }
 
 .theme-btn.active {
-  background: var(--bf-fire-gradient-subtle);
-  border: 1px solid var(--bf-border-accent);
+  background: var(--ui-accent-gradient-subtle);
+  border: 1px solid var(--ui-border-accent);
 }
 
 .theme-btn svg {
   width: 20px;
   height: 20px;
   margin-bottom: 4px;
-  color: var(--bf-text-muted);
+  color: var(--ui-text-muted);
 }
 
 .theme-btn.active svg {
-  color: var(--bf-primary);
+  color: var(--ui-accent);
 }
 
 .theme-btn span {
   font-size: 0.6875rem;
   font-weight: 500;
-  color: var(--bf-text-secondary);
+  color: var(--ui-text-secondary);
 }
 
 .theme-btn.active span {
-  color: var(--bf-primary);
+  color: var(--ui-accent);
 }
 
 .close-btn {
   width: calc(100% - 32px);
   margin: 8px 16px 16px;
   padding: 14px;
-  background: var(--bf-fire-gradient-subtle);
+  background: var(--ui-accent-gradient-subtle);
   border: none;
   border-radius: 12px;
   font-size: 1rem;
   font-weight: 500;
-  color: var(--bf-primary);
+  color: var(--ui-accent);
   cursor: pointer;
   transition: all 0.15s ease;
   -webkit-tap-highlight-color: transparent;
@@ -1055,7 +946,7 @@ html.dark .popup-drag-handle {
 }
 
 :deep(.p-menubar-item-link:hover) {
-  background: var(--bf-surface-hover) !important;
+  background: var(--ui-surface-hover) !important;
 }
 
 :deep(.p-menubar-item-content) {
@@ -1066,64 +957,40 @@ html.dark .popup-drag-handle {
   background: transparent !important;
   font-weight: 500 !important;
   font-size: 15px !important;
-  color: var(--bf-text-primary) !important;
+  color: var(--ui-text) !important;
   transition: transform 0.15s ease !important;
   transform-origin: center center !important;
 }
 
 :deep(.p-menubar-item-link:hover .p-menubar-item-label) {
   transform: scale(1.08) !important;
-  color: var(--bf-primary) !important;
+  color: var(--ui-accent) !important;
 }
 
 :deep(.p-menubar-item-icon) {
   background: transparent !important;
-  color: var(--bf-text-secondary) !important;
+  color: var(--ui-text-secondary) !important;
   transition: transform 0.15s ease !important;
   transform-origin: center center !important;
 }
 
 :deep(.p-menubar-item-link:hover .p-menubar-item-icon) {
   transform: scale(1.15) !important;
-  color: var(--bf-primary) !important;
+  color: var(--ui-accent) !important;
 }
 
 :deep(.p-menubar-submenu) { margin: 0 4px !important; }
 :deep(.p-menubar-root-list) { min-width: 100px !important; }
 
 :deep(.p-menubar-root-list > .p-menubar-item > .p-submenu-list) {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.35) 0%,
-    rgba(255, 255, 255, 0.25) 50%,
-    rgba(255, 255, 255, 0.35) 100%
-  ) !important;
-  backdrop-filter: blur(24px) saturate(200%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(200%) !important;
-  border: 1px solid var(--bf-border-default, rgba(255, 255, 255, 0.4)) !important;
+  background: var(--ui-nav-bg) !important;
+  backdrop-filter: var(--ui-nav-blur) !important;
+  -webkit-backdrop-filter: var(--ui-nav-blur) !important;
+  border: 1px solid var(--ui-nav-border) !important;
   border-radius: 12px !important;
   padding: 8px !important;
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.12),
-    0 2px 8px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.2) !important;
+  box-shadow: var(--ui-nav-shadow) !important;
   margin-top: 8px !important;
-}
-
-html.dark :deep(.p-menubar-root-list > .p-menubar-item > .p-submenu-list) {
-  background: linear-gradient(
-    135deg,
-    rgba(70, 70, 80, 0.45) 0%,
-    rgba(60, 60, 67, 0.4) 50%,
-    rgba(70, 70, 80, 0.45) 100%
-  ) !important;
-  border: 1px solid var(--bf-border-default, rgba(255, 255, 255, 0.18)) !important;
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.35),
-    0 2px 8px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.05) !important;
 }
 
 :deep(.p-submenu-list .p-menubar-item) { background: transparent !important; margin: 0 !important; }
@@ -1134,10 +1001,10 @@ html.dark :deep(.p-menubar-root-list > .p-menubar-item > .p-submenu-list) {
   border: none !important;
 }
 :deep(.p-submenu-list .p-menubar-item-link:hover) {
-  background: var(--bf-surface-hover) !important;
+  background: var(--ui-surface-hover) !important;
 }
 
-:deep(.p-menubar-submenu-icon) { color: var(--bf-text-muted) !important; font-size: 12px !important; }
+:deep(.p-menubar-submenu-icon) { color: var(--ui-text-muted) !important; font-size: 12px !important; }
 
 :deep(.p-menubar-root-list > .p-menubar-item > .p-submenu-list) {
   animation: menuSlide 0.25s cubic-bezier(0.2, 0, 0, 1) !important;
@@ -1152,24 +1019,24 @@ html.dark :deep(.p-menubar-root-list > .p-menubar-item > .p-submenu-list) {
 
 <!-- 全局样式覆盖 PrimeVue 默认样式 -->
 <style>
-/* 导航栏使用全局变量 */
-html.dark .p-menubar .p-menubar-item-label {
-  color: var(--bf-text-primary) !important;
+/* 导航栏使用全局变量（明暗通用，主题也跟着换） */
+.p-menubar .p-menubar-item-label {
+  color: var(--ui-text) !important;
 }
 
-html.dark .p-menubar .p-menubar-item-icon {
-  color: var(--bf-text-secondary) !important;
+.p-menubar .p-menubar-item-icon {
+  color: var(--ui-text-secondary) !important;
 }
 
-html.dark .p-menubar .p-menubar-item-content {
-  color: var(--bf-text-primary) !important;
+.p-menubar .p-menubar-item-content {
+  color: var(--ui-text) !important;
 }
 
-html.dark .p-menubar-item-link:hover .p-menubar-item-label {
-  color: var(--bf-primary) !important;
+.p-menubar-item-link:hover .p-menubar-item-label {
+  color: var(--ui-accent) !important;
 }
 
-html.dark .p-menubar-item-link:hover .p-menubar-item-icon {
-  color: var(--bf-primary) !important;
+.p-menubar-item-link:hover .p-menubar-item-icon {
+  color: var(--ui-accent) !important;
 }
 </style>

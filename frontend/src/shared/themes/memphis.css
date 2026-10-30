@@ -1,0 +1,265 @@
+/* =========================================================
+   主题 · Memphis 孟菲斯（默认）
+   ---------------------------------------------------------
+   不对称图形 + 波点 + 曲线 + 冲突色彩。
+
+   三条自我约束（照着做就不会翻车）：
+   1. 高饱和色只做「色块」，不做正文色 —— 文字永远落在安静的浅色底上；
+   2. 图案只出现在装饰位（图标井、角块、标题条），密集信息卡片用 --quiet；
+   3. 移动端自动降密度（图案变疏、硬阴影收小）。
+
+   动效：反馈 120–240ms；位移用 steps(1,end) 干脆跳切，
+        常规过渡用 ease-out。全程没有闪烁 / 快速交替。
+   ========================================================= */
+
+html[data-theme='memphis'] {
+  /* ============ 原始调色板（主题自己的名字） ============ */
+  --memphis-background: #fff4e4;
+  --memphis-coral: #ff6b6b;
+  --memphis-yellow: #ffd93d;
+  --memphis-blue: #4d96ff;
+  --memphis-ink: #2e2a33;
+  --memphis-pattern: radial-gradient(#2e2a33 1.5px, transparent 1.5px);
+
+  /* ============ 页面与表面 ============ */
+  --ui-bg: var(--memphis-background);
+  --ui-surface: #fffdf8;
+  --ui-surface-raised: #ffffff;
+  --ui-surface-sunken: #f7e7d0;
+  --ui-surface-hover: #ffe9c9;
+  --ui-surface-active: #ffddb3;
+  --ui-surface-glass: rgba(255, 253, 248, 0.94);
+
+  /* ============ 描边：墨色实边，是孟菲斯的主要结构线 ============ */
+  --ui-border: var(--memphis-ink);
+  --ui-border-subtle: rgba(46, 42, 51, 0.18);
+  --ui-border-accent: var(--memphis-ink);
+
+  /* ============ 文字：四级都落在浅底上，安静可读 ============ */
+  --ui-text: var(--memphis-ink);
+  --ui-text-secondary: rgba(46, 42, 51, 0.74);
+  --ui-text-muted: rgba(46, 42, 51, 0.55);
+  --ui-text-faint: rgba(46, 42, 51, 0.38);
+  --ui-text-accent: #d64545;
+  --ui-text-on-accent: var(--memphis-ink);
+  /* 压在色块上的文字：墨色 */
+  --ui-text-on-block: var(--memphis-ink);
+
+  /* ============ 冲突色彩：珊瑚 / 黄 / 蓝，只做色块 ============ */
+  --ui-accent: var(--memphis-coral);
+  --ui-accent-light: #ff8e8e;
+  --ui-accent-dark: #d64545;
+  --ui-accent-glow: rgba(255, 107, 107, 0.35);
+  --ui-accent-gradient: linear-gradient(135deg, var(--memphis-coral) 0%, var(--memphis-yellow) 100%);
+  --ui-accent-gradient-subtle: linear-gradient(
+    135deg,
+    rgba(255, 107, 107, 0.14) 0%,
+    rgba(255, 217, 61, 0.14) 100%
+  );
+
+  --ui-highlight: var(--memphis-yellow);
+  --ui-highlight-light: #ffe58a;
+
+  /* ============ 色块：珊瑚 / 黄 / 蓝，成组用在卡片与图标井上 ============ */
+  --ui-block-1: var(--memphis-coral);
+  --ui-block-2: var(--memphis-yellow);
+  --ui-block-3: var(--memphis-blue);
+
+  /* ============ 状态色：压暗一档，保证浅底上的对比度 ============ */
+  --ui-success: #1e9e4a;
+  --ui-success-light: #5fd37e;
+  --ui-success-bg: rgba(30, 158, 74, 0.12);
+  --ui-warning: #c97a04;
+  --ui-warning-light: #ffc94d;
+  --ui-warning-bg: rgba(201, 122, 4, 0.12);
+  --ui-danger: #d93b3b;
+  --ui-danger-light: #ff7a7a;
+  --ui-danger-bg: rgba(217, 59, 59, 0.12);
+  --ui-info: var(--memphis-blue);
+  --ui-info-light: #7db0ff;
+  --ui-info-bg: rgba(77, 150, 255, 0.14);
+
+  --ui-gradient-primary: linear-gradient(135deg, rgba(255, 107, 107, 0.14) 0%, rgba(77, 150, 255, 0.14) 100%);
+  --ui-gradient-success: linear-gradient(135deg, rgba(30, 158, 74, 0.12) 0%, rgba(255, 217, 61, 0.12) 100%);
+  --ui-gradient-highlight: linear-gradient(135deg, rgba(77, 150, 255, 0.14) 0%, rgba(255, 107, 107, 0.14) 100%);
+
+  /* ============ 卡片：粗墨边 + 硬投影（不是模糊阴影） ============ */
+  --ui-card-bg: #fffdf8;
+  --ui-card-border: var(--memphis-ink);
+  --ui-card-border-width: 2px;
+  --ui-card-radius: 8px;
+  --ui-card-radius-sm: 6px;
+  --ui-card-radius-lg: 12px;
+  --ui-card-shadow: 4px 4px 0 var(--memphis-ink);
+  --ui-card-shadow-hover: 6px 6px 0 var(--memphis-ink);
+  --ui-card-lift: -3px;
+  /* 位移跳切：干脆，不拖泥带水 */
+  --ui-card-ease: var(--ui-ease-step);
+
+  /* ============ 动效：反馈 120–240ms，曲线 steps / ease-out ============ */
+  --ui-duration-fast: 120ms;
+  --ui-duration-base: 180ms;
+  --ui-duration-slow: 240ms;
+  --ui-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ui-ease-step: steps(1, end);
+  /* 图案默认关闭 —— 只有标了 --pattern 的卡片才有波点 */
+  --ui-card-pattern: var(--memphis-pattern);
+  --ui-card-pattern-size: 14px 14px;
+
+  /* ============ 按钮：色块 + 墨边 + 硬投影 ============ */
+  --ui-btn-primary-bg: var(--memphis-coral);
+  --ui-btn-primary-hover: var(--memphis-yellow);
+  --ui-btn-secondary-bg: #fffdf8;
+  --ui-btn-secondary-hover: var(--memphis-yellow);
+  --ui-btn-radius: 6px;
+
+  /* ============ 输入框 ============ */
+  --ui-input-bg: #fffdf8;
+  --ui-input-border: var(--memphis-ink);
+  --ui-input-focus: rgba(255, 107, 107, 0.3);
+  --ui-input-radius: 6px;
+
+  /* ============ 导航栏：实色块 + 墨边 + 硬投影（孟菲斯不用玻璃） ============ */
+  --ui-nav-bg: #fffdf8;
+  --ui-nav-blur: none;
+  --ui-nav-border: var(--memphis-ink);
+  --ui-nav-shadow: 4px 4px 0 var(--memphis-ink);
+  --ui-nav-shadow-top: 0 -4px 0 var(--memphis-ink);
+
+  /* ============ 半透明浮层：不用玻璃，改成墨边实色块 ============ */
+  --ui-glass-border-width: 2px;
+  --ui-glass-border: var(--memphis-ink);
+
+  /* ============ 阴影（主题基调是硬投影，这里是辅助用的） ============ */
+  --ui-shadow-sm: 2px 2px 0 var(--memphis-ink);
+  --ui-shadow-md: 4px 4px 0 var(--memphis-ink);
+  --ui-shadow-lg: 6px 6px 0 var(--memphis-ink);
+
+  /* ============ 装饰形状：右上角三角块（不对称） ============ */
+  --ui-shape-color: var(--memphis-yellow);
+  --ui-shape-clip: polygon(0 0, 100% 0, 100% 100%);
+  --ui-shape-size: 30px;
+
+  /* ============ 图标井：圆形 + 实色块（曲线） ============ */
+  --ui-icon-well-radius: var(--ui-radius-full);
+  --ui-icon-well-border: 2px solid var(--memphis-ink);
+
+  /* ============ 字体 ============ */
+  --ui-font-heading: 'Barlow', sans-serif;
+  --ui-font-body: 'Barlow', sans-serif;
+
+  /* ============ 首屏光晕：珊瑚色，比孟菲斯的重色收敛 ============ */
+  --ui-hero-glow: rgba(255, 107, 107, 0.16);
+}
+
+/* =========================================================
+   深色模式：墨底 + 奶白结构线，色块不变
+   ========================================================= */
+html[data-theme='memphis'].dark {
+  --memphis-background: #221e29;
+  --memphis-ink: #12101a;
+
+  --ui-bg: #221e29;
+  --ui-surface: #2c2735;
+  --ui-surface-raised: #363041;
+  --ui-surface-sunken: #1b1822;
+  --ui-surface-hover: #403948;
+  --ui-surface-active: #4a4254;
+  --ui-surface-glass: rgba(44, 39, 53, 0.94);
+
+  --ui-border: #fff4e4;
+  --ui-border-subtle: rgba(255, 244, 228, 0.2);
+  --ui-border-accent: #fff4e4;
+
+  --ui-text: #fff4e4;
+  --ui-text-secondary: rgba(255, 244, 228, 0.74);
+  --ui-text-muted: rgba(255, 244, 228, 0.56);
+  --ui-text-faint: rgba(255, 244, 228, 0.38);
+  --ui-text-accent: #ff8e8e;
+  --ui-text-on-accent: #2e2a33;
+  --ui-text-on-block: #2e2a33;
+
+  --ui-accent: var(--memphis-coral);
+  --ui-accent-light: #ff8e8e;
+  --ui-accent-dark: #ff6b6b;
+  --ui-accent-glow: rgba(255, 107, 107, 0.3);
+  --ui-accent-gradient-subtle: linear-gradient(
+    135deg,
+    rgba(255, 107, 107, 0.18) 0%,
+    rgba(255, 217, 61, 0.18) 100%
+  );
+
+  --ui-highlight: var(--memphis-yellow);
+  --ui-highlight-light: #ffe58a;
+
+  --ui-success: #5fd37e;
+  --ui-success-light: #8fe6a4;
+  --ui-success-bg: rgba(95, 211, 126, 0.16);
+  --ui-warning: #ffc94d;
+  --ui-warning-light: #ffdc8a;
+  --ui-warning-bg: rgba(255, 201, 77, 0.16);
+  --ui-danger: #ff7a7a;
+  --ui-danger-light: #ffa8a8;
+  --ui-danger-bg: rgba(255, 122, 122, 0.16);
+  --ui-info: #7db0ff;
+  --ui-info-light: #a9caff;
+  --ui-info-bg: rgba(125, 176, 255, 0.16);
+
+  --ui-card-bg: #2c2735;
+  --ui-card-border: #fff4e4;
+  --ui-card-shadow: 4px 4px 0 #12101a;
+  --ui-card-shadow-hover: 6px 6px 0 #12101a;
+
+  --ui-btn-primary-bg: var(--memphis-coral);
+  --ui-btn-primary-hover: var(--memphis-yellow);
+  --ui-btn-secondary-bg: #363041;
+  --ui-btn-secondary-hover: var(--memphis-yellow);
+
+  --ui-input-bg: #363041;
+  --ui-input-border: #fff4e4;
+  --ui-input-focus: rgba(255, 107, 107, 0.35);
+
+  --ui-nav-bg: #2c2735;
+  --ui-nav-blur: none;
+  --ui-nav-border: #fff4e4;
+  --ui-nav-shadow: 4px 4px 0 #12101a;
+  --ui-nav-shadow-top: 0 -4px 0 #12101a;
+
+  --ui-glass-border-width: 2px;
+  --ui-glass-border: #fff4e4;
+
+  --ui-shadow-sm: 2px 2px 0 #12101a;
+  --ui-shadow-md: 4px 4px 0 #12101a;
+  --ui-shadow-lg: 6px 6px 0 #12101a;
+
+  --ui-shape-color: var(--memphis-yellow);
+  --ui-icon-well-border: 2px solid #fff4e4;
+}
+
+/* =========================================================
+   移动端降密度：图案变疏、硬投影收小
+   （复杂装饰在窄屏要简化，否则抢内容）
+   ========================================================= */
+@media (max-width: 640px) {
+  html[data-theme='memphis'] {
+    --ui-card-pattern-size: 22px 22px;
+    --ui-card-shadow: 3px 3px 0 var(--memphis-ink);
+    --ui-card-shadow-hover: 4px 4px 0 var(--memphis-ink);
+    --ui-card-lift: -2px;
+    --ui-shape-size: 22px;
+  }
+
+  html[data-theme='memphis'].dark {
+    --ui-card-shadow: 3px 3px 0 #12101a;
+    --ui-card-shadow-hover: 4px 4px 0 #12101a;
+  }
+}
+
+/* =========================================================
+   孟菲斯的图标井 = 实心色块（圆形）
+   --ui-block 由卡片自己在元素上指定 → 这里按元素解析，颜色才会跟着卡片走
+   ========================================================= */
+html[data-theme='memphis'] .ui-icon-well {
+  background: var(--ui-block, var(--ui-block-1));
+  color: var(--ui-text-on-block);
+}

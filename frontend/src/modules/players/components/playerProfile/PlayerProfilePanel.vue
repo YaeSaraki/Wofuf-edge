@@ -7,6 +7,7 @@ import { Render, WalkingAnimation } from 'skin3d'
 import type { PlayerSkin } from '@M/players/dtos/PlayerSkin.ts'
 import { translate } from '@S/services/i18n'
 import { addImagePrefixToBase64 } from '@SU/Base64Util.ts'
+import AppCard from '@S/components/ui/AppCard.vue'
 
 const props = defineProps<{ player: Player | null }>()
 const playerService = new PlayerService()
@@ -161,179 +162,164 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div v-if="isLoading" class="bf-loading">
-    <div class="bf-loading__spinner"></div>
+  <div v-if="isLoading" class="ui-loading">
+    <div class="ui-loading__spinner"></div>
   </div>
-  <div v-else-if="errorMsg" class="bf-error">
+  <div v-else-if="errorMsg" class="ui-error">
     {{ errorMsg }}
   </div>
-  <div v-else-if="player" class="bf-player-profile">
+  <AppCard v-else-if="player" class="ui-player-profile" variant="default" size="md">
     <!-- 玩家名称 -->
-    <h2 class="bf-player-name">
+    <h2 class="ui-player-name">
       {{ player.name }}
     </h2>
 
     <!-- 3D皮肤展示 -->
-    <div class="bf-skin-viewer">
-      <canvas ref="canvas" :height="dims.height" :width="dims.width" class="bf-skin-canvas" />
+    <div class="ui-skin-viewer">
+      <canvas ref="canvas" :height="dims.height" :width="dims.width" class="ui-skin-canvas" />
     </div>
 
     <!-- 信息面板 -->
-    <div class="bf-info-grid">
+    <div class="ui-info-grid">
       <!-- 游玩时长 -->
-      <div class="bf-info-card">
-        <p class="bf-info-label">
+      <AppCard class="ui-info-card" variant="quiet" size="sm">
+        <p class="ui-info-label">
           {{ translate('players', 'player.playtime') }}
         </p>
-        <p class="bf-info-value">
+        <p class="ui-info-value">
           {{ (player.totalPlaytimeSeconds / (20 * 60 * 60)).toFixed(1) }} h
         </p>
 
         <!-- 上次游玩 -->
-        <p class="bf-info-label">
+        <p class="ui-info-label">
           {{ translate('players', 'player.last-login') }}
         </p>
-        <p class="bf-info-value">
+        <p class="ui-info-value">
           {{ new Date(player.lastLogin).toLocaleString().split(',')[0] }}
         </p>
 
         <!-- 注册时间 -->
-        <p class="bf-info-label">
+        <p class="ui-info-label">
           {{ translate('players', 'player.register-time') }}
         </p>
-        <p class="bf-info-value">
+        <p class="ui-info-value">
           {{ new Date(player.firstLogin).toLocaleString().split(',')[0] }}
         </p>
-      </div>
+      </AppCard>
     </div>
-  </div>
+  </AppCard>
 </template>
 
 <style scoped>
 /* 加载状态 */
-.bf-loading {
+.ui-loading {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 160px;
 }
 
-.bf-loading__spinner {
+.ui-loading__spinner {
   width: 24px;
   height: 24px;
-  border: 2px solid var(--bf-border-default);
-  border-top-color: var(--bf-primary);
+  border: 2px solid var(--ui-border);
+  border-top-color: var(--ui-accent);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 /* 错误状态 */
-.bf-error {
+.ui-error {
   text-align: center;
-  color: #ef4444;
-  padding: var(--bf-space-lg, 24px);
+  color: var(--ui-danger);
+  padding: var(--ui-space-lg, 24px);
 }
 
-/* 玩家资料容器 */
-.bf-player-profile {
+/* 玩家资料容器（表面交给 AppCard，这里只管排版） */
+.ui-player-profile {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  gap: var(--bf-space-lg, 24px);
-  padding: var(--bf-space-xl, 32px) var(--bf-space-md, 16px);
+  gap: var(--ui-space-lg, 24px);
   width: 100%;
 }
 
 /* 玩家名称 */
-.bf-player-name {
+.ui-player-name {
   font-size: 1.75rem;
   font-weight: 700;
-  color: var(--bf-text-primary);
+  color: var(--ui-text);
   letter-spacing: -0.02em;
   margin: 0;
-  background: var(--bf-fire-gradient);
+  background: var(--ui-accent-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 @media (min-width: 768px) {
-  .bf-player-name {
+  .ui-player-name {
     font-size: 2rem;
   }
 }
 
 /* 皮肤查看器 */
-.bf-skin-viewer {
+.ui-skin-viewer {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.bf-skin-canvas {
-  border-radius: var(--bf-card-radius, 16px);
-  transition: all var(--bf-transition-fast, 0.15s ease);
+.ui-skin-canvas {
+  border-radius: var(--ui-card-radius, 16px);
+  transition: all var(--ui-transition-fast, 0.15s ease);
 }
 
-.bf-skin-canvas:hover {
-  border: 2px solid var(--bf-border-default);
-  border-color: var(--bf-border-accent);
+.ui-skin-canvas:hover {
+  border: 2px solid var(--ui-border-accent);
   transform: scale(1.02);
 }
 
 /* 信息网格 */
-.bf-info-grid {
+.ui-info-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--bf-space-md, 16px);
+  gap: var(--ui-space-md, 16px);
   width: 100%;
   max-width: 280px;
 }
 
-/* 信息卡片 */
-.bf-info-card {
-  border: 1px solid var(--bf-card-border);
-  border-radius: var(--bf-card-radius-sm, 12px);
-  padding: var(--bf-space-md, 16px);
-  transition: all var(--bf-transition-fast, 0.15s ease);
+/* 信息卡片（表面交给 AppCard 的 quiet 变体） */
+.ui-info-card {
+  transition: all var(--ui-transition-fast, 0.15s ease);
 }
 
-.bf-info-card:hover {
-  border-color: var(--bf-border-accent);
+.ui-info-card:hover {
+  border-color: var(--ui-border-accent);
   transform: translateY(-2px);
 }
 
-.bf-info-label {
+.ui-info-label {
   font-size: 0.75rem;
   font-weight: 500;
-  color: var(--bf-text-muted);
-  margin: 0 0 var(--bf-space-xs, 4px) 0;
+  color: var(--ui-text-muted);
+  margin: 0 0 var(--ui-space-xs, 4px) 0;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-.bf-info-value {
+.ui-info-value {
   font-size: 1.125rem;
   font-weight: 600;
-  color: var(--bf-text-primary);
+  color: var(--ui-text);
   margin: 0;
 }
 
 /* 响应式 */
 @media (max-width: 640px) {
-  .bf-player-profile {
-    padding: var(--bf-space-lg, 24px) var(--bf-space-sm, 8px);
-  }
-
-  .bf-info-grid {
+  .ui-info-grid {
     max-width: 240px;
   }
 }

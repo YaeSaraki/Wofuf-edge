@@ -6,6 +6,15 @@
     <link href="/favicon.ico" sizes="any" rel="icon">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>MCS</title>
+    <script>
+        // 界面主题在构建期由 config.env 的 UI_THEME 决定（见 scripts/build.sh）。
+        // 这里在首屏渲染前就把 data-theme 写上，避免先闪一下默认主题。
+        // %VITE_UI_THEME% 没配时会变成空串或原样保留占位符，两种情况都退回 liquid-glass。
+        (function () {
+            var t = '%VITE_UI_THEME%';
+            document.documentElement.dataset.theme = (t && t.charAt(0) !== '%') ? t : 'liquid-glass';
+        })();
+    </script>
 </head>
 <body>
 <div id="app"></div>

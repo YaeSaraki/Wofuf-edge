@@ -7,3 +7,5 @@ export const VITE_SERVER_CORE = import.meta.env.VITE_SERVER_CORE
 export const VITE_SERVER_VERSION = import.meta.env.VITE_SERVER_VERSION
 export const VITE_SERVER_FOUNDED = import.meta.env.VITE_SERVER_FOUNDED
 export const VITE_SERVER_INTRO = import.meta.env.VITE_SERVER_INTRO
+// 界面主题（视觉风格）：liquid-glass | memphis —— 由 config.env 的 UI_THEME 注入
+export const VITE_UI_THEME = import.meta.env.VITE_UI_THEME

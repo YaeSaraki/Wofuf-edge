@@ -1,8 +1,9 @@
+/* 浮动菜单（桌面端导航容器）
+   表面（背景/描边/阴影/毛玻璃）由 .ui-nav-surface 提供，主题可换；
+   这里只管布局与入场动画。 */
 .floating-menu {
   pointer-events: auto;
-  box-shadow: 0 5px 10px -3px rgba(0, 0, 0, 0.2),
-  0 5px 5px -3px rgba(0, 0, 0, 0.1),
-  0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-  animation: floatIn 0.3s ease-out,
-  floatOut 0.3s ease-in;
+  animation:
+    floatIn 0.3s ease-out,
+    floatOut 0.3s ease-in;
 }

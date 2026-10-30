@@ -1,0 +1,228 @@
+/* =========================================================
+   主题模板 —— 新增主题照抄这份
+   ---------------------------------------------------------
+   用法：
+     1. cp shared/themes/_template.css shared/themes/<你的主题>.css
+     2. 把下面所有 html[data-theme='xxx'] 里的 xxx 换成你的主题 id
+     3. 在 shared/themes/index.css 里 import 你的主题
+     4. 在 shared/config/theme.ts 的 THEME_REGISTRY 里登记
+     5. 在 config.env 里把 UI_THEME 改成你的主题 id，重新构建部署
+
+   规则：
+     · 主题只负责「语义层」：颜色、表面、描边、阴影、图案、动效时长/曲线
+     · 间距 / 圆角刻度在 base.css，主题不要覆盖（除非确实要换节奏）
+     · 每组 token 必须同时给浅色和深色两套
+     · 深色写法固定是 html[data-theme='xxx'].dark（靠这个拿到更高优先级）
+     · 卡片必须留「安静区域」：高饱和色只做色块，正文永远落在浅底上
+   ========================================================= */
+
+html[data-theme='TEMPLATE'] {
+  /* ============ 页面与表面 ============ */
+  --ui-bg: #ffffff;
+  --ui-surface: #ffffff;
+  --ui-surface-raised: #ffffff;
+  --ui-surface-sunken: #f2f2f2;
+  --ui-surface-hover: #f5f5f5;
+  --ui-surface-active: #ebebeb;
+  --ui-surface-glass: rgba(255, 255, 255, 0.8);
+
+  /* ============ 描边 ============ */
+  --ui-border: rgba(0, 0, 0, 0.12);
+  --ui-border-subtle: rgba(0, 0, 0, 0.06);
+  --ui-border-accent: rgba(0, 0, 0, 0.24);
+
+  /* ============ 文字（四级） ============ */
+  --ui-text: #111111;
+  --ui-text-secondary: rgba(0, 0, 0, 0.7);
+  --ui-text-muted: rgba(0, 0, 0, 0.5);
+  --ui-text-faint: rgba(0, 0, 0, 0.35);
+  --ui-text-accent: #333333;
+  --ui-text-on-accent: #ffffff;
+  /* 压在色块上的文字 */
+  --ui-text-on-block: #111111;
+
+  /* ============ 主色 ============ */
+  --ui-accent: #3b82f6;
+  --ui-accent-light: #60a5fa;
+  --ui-accent-dark: #2563eb;
+  --ui-accent-glow: rgba(59, 130, 246, 0.3);
+  --ui-accent-gradient: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+  --ui-accent-gradient-subtle: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(96, 165, 250, 0.1) 100%);
+
+  /* ============ 次强调色 ============ */
+  --ui-highlight: #8b5cf6;
+  --ui-highlight-light: #a78bfa;
+
+  /* ============ 色块（成组高饱和色，给卡片/图标井用） ============ */
+  --ui-block-1: #3b82f6;
+  --ui-block-2: #8b5cf6;
+  --ui-block-3: #22c55e;
+
+  /* ============ 状态色（各自三件套：实色 / 亮色 / 淡底） ============ */
+  --ui-success: #22c55e;
+  --ui-success-light: #4ade80;
+  --ui-success-bg: rgba(34, 197, 94, 0.1);
+  --ui-warning: #f59e0b;
+  --ui-warning-light: #fbbf24;
+  --ui-warning-bg: rgba(245, 158, 11, 0.1);
+  --ui-danger: #ef4444;
+  --ui-danger-light: #f87171;
+  --ui-danger-bg: rgba(239, 68, 68, 0.1);
+  --ui-info: #3b82f6;
+  --ui-info-light: #60a5fa;
+  --ui-info-bg: rgba(59, 130, 246, 0.1);
+
+  /* ============ 渐变（给「主色氛围」的卡片用） ============ */
+  --ui-gradient-primary: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+  --ui-gradient-success: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+  --ui-gradient-highlight: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+
+  /* ============ 卡片 ============ */
+  --ui-card-bg: #ffffff;
+  --ui-card-border: rgba(0, 0, 0, 0.1);
+  --ui-card-border-width: 1px;
+  --ui-card-radius: 16px;
+  --ui-card-radius-sm: 12px;
+  --ui-card-radius-lg: 20px;
+  --ui-card-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  --ui-card-shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.14);
+  --ui-card-lift: -2px;
+  --ui-card-ease: var(--ui-ease-out);
+  --ui-card-pattern: none;
+  --ui-card-pattern-size: 12px 12px;
+
+  /* ============ 按钮 ============ */
+  --ui-btn-primary-bg: #3b82f6;
+  --ui-btn-primary-hover: #2563eb;
+  --ui-btn-secondary-bg: rgba(0, 0, 0, 0.04);
+  --ui-btn-secondary-hover: rgba(0, 0, 0, 0.08);
+  --ui-btn-radius: 10px;
+
+  /* ============ 输入框 ============ */
+  --ui-input-bg: #ffffff;
+  --ui-input-border: rgba(0, 0, 0, 0.14);
+  --ui-input-focus: rgba(59, 130, 246, 0.2);
+  --ui-input-radius: 10px;
+
+  /* ============ 导航栏 ============ */
+  --ui-nav-bg: rgba(255, 255, 255, 0.85);
+  --ui-nav-blur: blur(20px);
+  --ui-nav-border: rgba(0, 0, 0, 0.06);
+  --ui-nav-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --ui-nav-shadow-top: 0 -8px 32px rgba(0, 0, 0, 0.12);
+
+  /* ============ 半透明浮层（.ui-glass） ============ */
+  --ui-glass-border-width: 1px;
+  --ui-glass-border: var(--ui-border-subtle);
+
+  /* ============ 阴影 ============ */
+  --ui-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --ui-shadow-md: 0 8px 32px rgba(0, 0, 0, 0.08);
+  --ui-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+
+  /* ============ 装饰形状（角块 / 曲线） ============ */
+  --ui-shape-color: transparent;
+  --ui-shape-clip: none;
+  --ui-shape-size: 28px;
+
+  /* ============ 图标井 ============ */
+  --ui-icon-well-radius: var(--ui-radius-lg);
+  --ui-icon-well-border: 1px solid var(--ui-border-subtle);
+  --ui-icon-well-bg: var(--ui-surface-raised);
+  --ui-icon-well-color: var(--ui-accent);
+
+  /* ============ 字体 ============ */
+  --ui-font-heading: 'Barlow', sans-serif;
+  --ui-font-body: 'Barlow', sans-serif;
+
+  /* ============ 首屏光晕 ============ */
+  --ui-hero-glow: rgba(59, 130, 246, 0.12);
+
+  /* ============ 动效（可选：覆盖时长/曲线） ============ */
+  /* --ui-duration-fast: 120ms; */
+  /* --ui-duration-base: 180ms; */
+  /* --ui-duration-slow: 240ms; */
+  /* --ui-ease-out: cubic-bezier(0.16, 1, 0.3, 1); */
+  /* --ui-ease-step: steps(1, end); */
+}
+
+/* =========================================================
+   深色模式：把每个 token 换成深底版本
+   ========================================================= */
+html[data-theme='TEMPLATE'].dark {
+  --ui-bg: #111111;
+  --ui-surface: #1a1a1a;
+  --ui-surface-raised: #242424;
+  --ui-surface-sunken: #0d0d0d;
+  --ui-surface-hover: #2e2e2e;
+  --ui-surface-active: #383838;
+  --ui-surface-glass: rgba(26, 26, 26, 0.85);
+
+  --ui-border: rgba(255, 255, 255, 0.14);
+  --ui-border-subtle: rgba(255, 255, 255, 0.07);
+  --ui-border-accent: rgba(255, 255, 255, 0.28);
+
+  --ui-text: #f5f5f5;
+  --ui-text-secondary: rgba(255, 255, 255, 0.72);
+  --ui-text-muted: rgba(255, 255, 255, 0.52);
+  --ui-text-faint: rgba(255, 255, 255, 0.36);
+  --ui-text-accent: #93c5fd;
+  --ui-text-on-accent: #111111;
+  --ui-text-on-block: #ffffff;
+
+  --ui-accent: #60a5fa;
+  --ui-accent-light: #93c5fd;
+  --ui-accent-dark: #3b82f6;
+  --ui-accent-glow: rgba(96, 165, 250, 0.3);
+  --ui-accent-gradient: linear-gradient(135deg, #3b82f6 0%, #93c5fd 100%);
+  --ui-accent-gradient-subtle: linear-gradient(135deg, rgba(96, 165, 250, 0.15) 0%, rgba(147, 197, 253, 0.15) 100%);
+
+  --ui-highlight: #a78bfa;
+  --ui-highlight-light: #c4b5fd;
+
+  --ui-success: #4ade80;
+  --ui-success-light: #86efac;
+  --ui-success-bg: rgba(74, 222, 128, 0.15);
+  --ui-warning: #fbbf24;
+  --ui-warning-light: #fcd34d;
+  --ui-warning-bg: rgba(251, 191, 36, 0.15);
+  --ui-danger: #f87171;
+  --ui-danger-light: #fca5a5;
+  --ui-danger-bg: rgba(248, 113, 113, 0.15);
+  --ui-info: #60a5fa;
+  --ui-info-light: #93c5fd;
+  --ui-info-bg: rgba(96, 165, 250, 0.15);
+
+  --ui-gradient-primary: linear-gradient(135deg, rgba(96, 165, 250, 0.15) 0%, rgba(129, 140, 248, 0.15) 100%);
+  --ui-gradient-success: linear-gradient(135deg, rgba(74, 222, 128, 0.15) 0%, rgba(52, 211, 153, 0.15) 100%);
+  --ui-gradient-highlight: linear-gradient(135deg, rgba(192, 132, 252, 0.15) 0%, rgba(244, 114, 182, 0.15) 100%);
+
+  --ui-card-bg: #1a1a1a;
+  --ui-card-border: rgba(255, 255, 255, 0.1);
+  --ui-card-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+  --ui-card-shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.55);
+
+  --ui-btn-primary-bg: #3b82f6;
+  --ui-btn-primary-hover: #60a5fa;
+  --ui-btn-secondary-bg: rgba(255, 255, 255, 0.06);
+  --ui-btn-secondary-hover: rgba(255, 255, 255, 0.1);
+
+  --ui-input-bg: rgba(255, 255, 255, 0.05);
+  --ui-input-border: rgba(255, 255, 255, 0.12);
+  --ui-input-focus: rgba(96, 165, 250, 0.3);
+
+  --ui-nav-bg: rgba(17, 17, 17, 0.85);
+  --ui-nav-blur: blur(20px);
+  --ui-nav-border: rgba(255, 255, 255, 0.07);
+  --ui-nav-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  --ui-nav-shadow-top: 0 -8px 32px rgba(0, 0, 0, 0.35);
+
+  --ui-glass-border-width: 1px;
+  --ui-glass-border: var(--ui-border-subtle);
+
+  --ui-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --ui-shadow-md: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --ui-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.4);
+
+  --ui-shape-color: transparent;
+}

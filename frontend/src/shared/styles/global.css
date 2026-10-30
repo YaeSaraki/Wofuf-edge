@@ -1,647 +1,125 @@
-/* ==================== 全局设计系统 ==================== */
+/* =========================================================
+   Wofuf UI · 外壳层（Shell）
+   ---------------------------------------------------------
+   只放「跨页面、和主题无关」的东西：
+     · 字体、body 基础样式
+     · 图标尺寸工具类
+     · 半透明浮层（.ui-glass）
+     · 状态文字颜色
+     · 全局关键帧
+
+   颜色与形状一律走 --ui-* token（见 shared/themes/），
+   这里不写死任何颜色。
+   ========================================================= */
 
 /* 字体引入 */
 @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Barlow:wght@300;400;500;600;700&display=swap');
 
-/* CSS变量 - 浅色主题（默认） */
-:root {
-  /* 颜色系统 */
-  --background: 0 0% 98%;
-  --foreground: 220 15% 8%;
-  --card: 0 0% 100%;
-  --card-foreground: 220 15% 8%;
-  --primary: 220 15% 8%;
-  --primary-foreground: 0 0% 98%;
-  --accent: 220 15% 92%;
-  --accent-foreground: 220 15% 8%;
-  --muted: 220 15% 85%;
-  --muted-foreground: 220 15% 35%;
-  --border: 220 15% 8% / 0.12;
-
-  /* 文字颜色 - 浅色模式 */
-  --text-primary: rgba(0, 0, 0, 0.87);
-  --text-secondary: rgba(0, 0, 0, 0.65);
-  --text-tertiary: rgba(0, 0, 0, 0.50);
-  --text-muted: rgba(0, 0, 0, 0.38);
-
-  /* 玻璃效果 - 浅色模式 */
-  --glass-bg: rgba(0, 0, 0, 0.02);
-  --glass-border: rgba(0, 0, 0, 0.08);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-
-  /* 主题色 */
-  --primary-color: #6366f1;
-  --success-color: #10b981;
-  --warning-color: #f59e0b;
-  --danger-color: #f43f5e;
-
-  /* 间距 */
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
-  --spacing-2xl: 3rem;
-
-  /* 圆角 */
-  --radius-sm: 0.5rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
-  --radius-2xl: 2rem;
-  --radius-full: 9999px;
-
-  /* 字体 */
-  --font-heading: 'Instrument Serif', serif;
-  --font-body: 'Barlow', sans-serif;
-
-  /* 过渡 */
-  --transition-fast: 150ms;
-  --transition-base: 300ms;
-  --transition-slow: 500ms;
-
-  /* Forum Design System Variables - Light Mode */
-  --bf-primary: #E85A2C;
-  --bf-primary-glow: rgba(232, 90, 44, 0.2);
-  --bf-fire-gradient: linear-gradient(135deg, #E85A2C 0%, #FF6B35 50%, #FF8C5A 100%);
-  --bf-fire-gradient-subtle: rgba(232, 90, 44, 0.06);
-
-  --bf-text-primary: rgba(0, 0, 0, 0.87);
-  --bf-text-secondary: rgba(0, 0, 0, 0.65);
-  --bf-text-muted: rgba(0, 0, 0, 0.38);
-
-  --bf-card-bg: rgba(255, 255, 255, 0.8);
-  --bf-card-border: rgba(0, 0, 0, 0.08);
-  --bf-card-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  --bf-card-shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.1);
-  --bf-card-radius: 1.25rem;
-
-  --bf-border-default: rgba(0, 0, 0, 0.06);
-  --bf-border-accent: rgba(232, 90, 44, 0.25);
-
-  --bf-input-bg: rgba(0, 0, 0, 0.02);
-  --bf-input-radius: 0.75rem;
-
-  --bf-btn-primary-bg: var(--bf-fire-gradient);
-  --bf-btn-primary-hover: linear-gradient(135deg, #FF6B35 0%, #FF8C5A 50%, #FFB088 100%);
-  --bf-btn-secondary-bg: rgba(0, 0, 0, 0.04);
-  --bf-btn-secondary-hover: rgba(0, 0, 0, 0.08);
-  --bf-btn-radius: 0.75rem;
-
-  --bf-space-xs: 0.25rem;
-  --bf-space-sm: 0.5rem;
-  --bf-space-md: 1rem;
-  --bf-space-lg: 1.5rem;
-  --bf-space-xl: 2rem;
-
-  --bf-transition-fast: 150ms ease;
-  --bf-transition-normal: 250ms ease;
-
-  --bf-header-height: 5rem;
+/* ==================== 基础元素 ==================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-/* 深色主题 */
-.dark {
-  --background: 220 15% 8%;
-  --foreground: 0 0% 98%;
-  --card: 220 15% 12%;
-  --card-foreground: 0 0% 98%;
-  --primary: 0 0% 100%;
-  --primary-foreground: 220 15% 8%;
-  --accent: 220 15% 18%;
-  --accent-foreground: 0 0% 98%;
-  --muted: 220 15% 25%;
-  --muted-foreground: 0 0% 75%;
-  --border: 0 0% 100% / 0.12;
-
-  /* 文字颜色 - 确保可读性 */
-  --text-primary: rgba(255, 255, 255, 0.95);
-  --text-secondary: rgba(255, 255, 255, 0.75);
-  --text-tertiary: rgba(255, 255, 255, 0.55);
-  --text-muted: rgba(255, 255, 255, 0.40);
-
-  /* 玻璃效果 */
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-
-  /* Forum Design System Variables - Dark Mode */
-  --bf-primary: #FF6B35;
-  --bf-primary-glow: rgba(255, 107, 53, 0.25);
-  --bf-fire-gradient: linear-gradient(135deg, #FF6B35 0%, #FF8C5A 50%, #FFB088 100%);
-  --bf-fire-gradient-subtle: rgba(255, 107, 53, 0.08);
-
-  --bf-text-primary: rgba(255, 255, 255, 0.95);
-  --bf-text-secondary: rgba(255, 255, 255, 0.75);
-  --bf-text-muted: rgba(255, 255, 255, 0.40);
-
-  --bf-card-bg: rgba(255, 255, 255, 0.03);
-  --bf-card-border: rgba(255, 255, 255, 0.08);
-  --bf-card-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  --bf-card-shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.25);
-  --bf-card-radius: 1.25rem;
-
-  --bf-border-default: rgba(255, 255, 255, 0.06);
-  --bf-border-accent: rgba(255, 107, 53, 0.3);
-
-  --bf-input-bg: rgba(255, 255, 255, 0.04);
-  --bf-input-radius: 0.75rem;
-
-  --bf-btn-primary-bg: var(--bf-fire-gradient);
-  --bf-btn-primary-hover: linear-gradient(135deg, #FF8C5A 0%, #FFB088 50%, #FFCDB2 100%);
-  --bf-btn-secondary-bg: rgba(255, 255, 255, 0.06);
-  --bf-btn-secondary-hover: rgba(255, 255, 255, 0.1);
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
-/* ==================== 页面容器 ==================== */
-.global-page-container {
+body {
   min-height: 100vh;
-  background: hsl(var(--background));
-  color: hsl(var(--foreground));
-  font-family: var(--font-body);
-  overflow-x: hidden;
-  position: relative;
+  margin: 0;
+  color: var(--ui-text);
+  background: var(--ui-bg);
+  font-family: var(--ui-font-body, 'Barlow', sans-serif);
+  font-size: 15px;
+  line-height: 1.6;
+  transition:
+    color var(--ui-transition-normal),
+    background-color var(--ui-transition-normal);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* ==================== 导航栏 ==================== */
-.global-navbar {
-  position: fixed;
-  top: 1rem;
-  left: 0;
-  right: 0;
-  z-index: 50;
-  padding: 0 2rem;
+#app {
+  min-height: 100vh;
 }
 
-.global-navbar-content {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem 2rem;
-  border-radius: var(--radius-full);
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-}
-
-.global-logo {
-  font-size: 1.5rem;
-  font-weight: 600;
-  font-family: var(--font-heading);
-  font-style: italic;
-  color: var(--text-primary);
-  text-decoration: none;
-}
-
-.global-nav-links {
-  display: none;
-  gap: 0.5rem;
-  padding: 0.25rem;
-  border-radius: var(--radius-full);
-}
-
-@media (min-width: 768px) {
-  .global-nav-links {
-    display: flex;
-  }
-}
-
-.global-nav-link {
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  text-decoration: none;
-  border-radius: var(--radius-full);
-  transition: all var(--transition-base) ease;
-}
-
-.global-nav-link:hover,
-.global-nav-link.active {
-  color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.dark .global-nav-link:hover,
-.dark .global-nav-link.active {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-:root:not(.dark) .global-nav-link:hover,
-:root:not(.dark) .global-nav-link.active {
-  background: rgba(0, 0, 0, 0.05);
-}
-
-/* ==================== Hero 区域 ==================== */
-.global-hero-section {
-  position: relative;
-  min-height: 600px;
-  display: flex;
+/* ==================== 图标 ==================== */
+.ui-icon {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 6rem 2rem 4rem;
-  overflow: hidden;
-}
-
-.global-hero-gradient {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    circle at 50% 30%,
-    rgba(99, 102, 241, 0.12) 0%,
-    transparent 50%
-  );
-  pointer-events: none;
-}
-
-.dark .global-hero-gradient {
-  background: radial-gradient(
-    circle at 50% 30%,
-    rgba(99, 102, 241, 0.15) 0%,
-    transparent 50%
-  );
-}
-
-.global-hero-content {
-  position: relative;
-  z-index: 10;
-  text-align: center;
-  max-width: 900px;
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.global-hero-content.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.global-hero-title {
-  font-family: var(--font-heading);
-  font-size: 4rem;
-  line-height: 1.1;
-  margin-bottom: 1.5rem;
-  font-weight: 400;
-  color: var(--text-primary);
-  letter-spacing: -0.03em;
-}
-
-@media (min-width: 768px) {
-  .global-hero-title {
-    font-size: 5.5rem;
-  }
-}
-
-.global-title-line {
-  display: block;
-  letter-spacing: -0.02em;
-}
-
-.global-title-line.italic {
-  font-style: italic;
-}
-
-.global-hero-subtitle {
-  font-size: 1.25rem;
-  font-weight: 400;
-  color: var(--text-secondary);
-  line-height: 1.7;
-}
-
-.global-hero-fade {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 200px;
-  background: linear-gradient(to top, hsl(var(--background)), transparent);
-  pointer-events: none;
-}
-
-/* ==================== 徽章 ==================== */
-.global-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1.25rem;
-  border-radius: var(--radius-full);
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 1rem;
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-  color: var(--text-primary);
-}
-
-.global-badge-icon {
-  width: 16px;
-  height: 16px;
   flex-shrink: 0;
 }
 
-/* ==================== 液态玻璃效果 ==================== */
-.liquid-glass {
-  background: var(--glass-bg);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-  position: relative;
-  overflow: hidden;
-  /* GPU加速，消除毛刺锯齿 */
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
-  will-change: transform;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  isolation: isolate;
+.ui-icon svg {
+  width: 100%;
+  height: 100%;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.liquid-glass::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.18) 0%,
-    rgba(255, 255, 255, 0.06) 25%,
-    rgba(255, 255, 255, 0) 50%,
-    rgba(255, 255, 255, 0) 50%,
-    rgba(255, 255, 255, 0.06) 75%,
-    rgba(255, 255, 255, 0.18) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  /* 伪元素也GPU加速 */
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
+.ui-icon-sm { width: 16px; height: 16px; }
+.ui-icon-md { width: 20px; height: 20px; }
+.ui-icon-lg { width: 24px; height: 24px; }
+.ui-icon-xl { width: 32px; height: 32px; }
+.ui-icon-2xl { width: 48px; height: 48px; }
+
+/* ==================== 半透明浮层 ==================== */
+/* 弹窗、导航、悬浮层用。孟菲斯主题会给它实色墨边，液态玻璃主题保持通透玻璃感。 */
+.ui-glass {
+  background: var(--ui-surface-glass);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: var(--ui-glass-border-width, 1px) solid var(--ui-glass-border, var(--ui-border-subtle));
+  box-shadow: var(--ui-shadow-md);
 }
 
-.dark .liquid-glass::before {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.2) 0%,
-    rgba(255, 255, 255, 0.08) 25%,
-    rgba(255, 255, 255, 0) 50%,
-    rgba(255, 255, 255, 0) 50%,
-    rgba(255, 255, 255, 0.08) 75%,
-    rgba(255, 255, 255, 0.2) 100%
-  );
+.ui-glass-strong {
+  background: var(--ui-surface-glass);
+  backdrop-filter: blur(20px) saturate(190%);
+  -webkit-backdrop-filter: blur(20px) saturate(190%);
+  border: var(--ui-glass-border-width, 1px) solid var(--ui-glass-border, var(--ui-border-subtle));
+  box-shadow: var(--ui-shadow-lg);
 }
 
-:root:not(.dark) .liquid-glass::before {
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0.1) 0%,
-    rgba(0, 0, 0, 0.04) 25%,
-    rgba(0, 0, 0, 0) 50%,
-    rgba(0, 0, 0, 0) 50%,
-    rgba(0, 0, 0, 0.04) 75%,
-    rgba(0, 0, 0, 0.1) 100%
-  );
+/* ==================== 导航栏表面 ==================== */
+/* 导航栏 / 抽屉 / 悬浮按钮共用一套外观，由主题决定：
+   液态玻璃是通透玻璃感，孟菲斯是实色墨边硬投影。 */
+.ui-nav-surface {
+  background: var(--ui-nav-bg);
+  backdrop-filter: var(--ui-nav-blur);
+  -webkit-backdrop-filter: var(--ui-nav-blur);
+  border: 1px solid var(--ui-nav-border);
+  box-shadow: var(--ui-nav-shadow);
 }
 
-.liquid-glass-strong {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px) saturate(200%);
-  -webkit-backdrop-filter: blur(20px) saturate(200%);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-  position: relative;
-  overflow: hidden;
-  /* GPU加速，消除毛刺锯齿 */
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
-  will-change: transform;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  isolation: isolate;
-}
-
-.liquid-glass-strong::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.25) 0%,
-    rgba(255, 255, 255, 0.1) 25%,
-    rgba(255, 255, 255, 0) 50%,
-    rgba(255, 255, 255, 0) 50%,
-    rgba(255, 255, 255, 0.1) 75%,
-    rgba(255, 255, 255, 0.25) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  /* 伪元素也GPU加速 */
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
-}
-
-.dark .liquid-glass-strong::before {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.28) 0%,
-    rgba(255, 255, 255, 0.12) 25%,
-    rgba(255, 255, 255, 0) 50%,
-    rgba(255, 255, 255, 0) 50%,
-    rgba(255, 255, 255, 0.12) 75%,
-    rgba(255, 255, 255, 0.28) 100%
-  );
-}
-
-:root:not(.dark) .liquid-glass-strong::before {
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0.12) 0%,
-    rgba(0, 0, 0, 0.05) 25%,
-    rgba(0, 0, 0, 0) 50%,
-    rgba(0, 0, 0, 0) 50%,
-    rgba(0, 0, 0, 0.05) 75%,
-    rgba(0, 0, 0, 0.12) 100%
-  );
-}
-
-/* ==================== 按钮 ==================== */
-.global-button {
-  padding: 0.875rem 2.25rem;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  border-radius: var(--radius-full);
-  cursor: pointer;
-  transition: all var(--transition-base) ease;
+/* 只描上边的版本（底部抽屉） */
+.ui-nav-surface--top {
   border: none;
-  outline: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.625rem;
-  text-decoration: none;
-  font-family: var(--font-body);
+  border-top: 1px solid var(--ui-nav-border);
+  box-shadow: var(--ui-nav-shadow-top);
 }
 
-.global-button-icon {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
+/* ==================== 状态文字 ==================== */
+.ui-text-success { color: var(--ui-success); }
+.ui-text-warning { color: var(--ui-warning); }
+.ui-text-danger { color: var(--ui-danger); }
+.ui-text-info { color: var(--ui-info); }
+
+/* ==================== 全局关键帧 ==================== */
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
-.global-button-primary {
-  background: var(--glass-bg);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-  color: var(--text-primary);
-}
-
-.global-button-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
-}
-
-.dark .global-button-primary:hover {
-  background: rgba(255, 255, 255, 0.12);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2), 0 16px 48px rgba(0, 0, 0, 0.3);
-}
-
-:root:not(.dark) .global-button-primary:hover {
-  background: rgba(0, 0, 0, 0.06);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
-}
-
-.global-button-secondary {
-  background: var(--text-primary);
-  color: var(--background);
-}
-
-.global-button-secondary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
-}
-
-/* ==================== 卡片 ==================== */
-.global-card {
-  padding: 2rem;
-  border-radius: var(--radius-2xl);
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-  transition: all var(--transition-base) ease;
-}
-
-.global-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
-}
-
-/* ==================== Section ==================== */
-.global-section {
-  margin-bottom: 4rem;
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.global-section.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.global-section-header {
-  margin-bottom: 1.5rem;
-}
-
-.global-section-title {
-  font-family: var(--font-heading);
-  font-size: 2rem;
-  font-weight: 400;
-  font-style: italic;
-  letter-spacing: -0.01em;
-  color: var(--text-primary);
-}
-
-@media (min-width: 768px) {
-  .global-section-title {
-    font-size: 2.5rem;
-  }
-}
-
-/* ==================== Footer ==================== */
-.global-footer {
-  border-top: 1px solid var(--glass-border);
-  padding: 2rem 1.5rem;
-  margin-top: 4rem;
-}
-
-.global-footer-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  align-items: center;
-}
-
-@media (min-width: 768px) {
-  .global-footer-content {
-    flex-direction: row;
-    justify-content: space-between;
-  }
-}
-
-.global-footer-text {
-  font-size: 0.8125rem;
-  color: var(--text-muted);
-}
-
-.global-footer-links {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.global-footer-link {
-  font-size: 0.8125rem;
-  color: var(--text-muted);
-  text-decoration: none;
-  transition: color var(--transition-base) ease;
-}
-
-.global-footer-link:hover {
-  color: var(--text-primary);
-}
-
-/* ==================== 动画 ==================== */
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
 }
 
 @keyframes heartbeat {
@@ -666,61 +144,25 @@
   }
 }
 
-/* ==================== 工具类 ==================== */
-.text-primary { color: var(--text-primary); }
-.text-secondary { color: var(--text-secondary); }
-.text-tertiary { color: var(--text-tertiary); }
-.text-muted { color: var(--text-muted); }
-
-.text-emerald { color: #10b981; }
-.text-amber { color: #f59e0b; }
-.text-rose { color: #f43f5e; }
-.text-violet { color: #6366f1; }
-
-.glow-emerald { box-shadow: 0 0 16px rgba(16, 185, 129, 0.5); }
-.glow-amber { box-shadow: 0 0 16px rgba(245, 158, 11, 0.5); }
-.glow-rose { box-shadow: 0 0 16px rgba(244, 63, 94, 0.5); }
-.glow-violet { box-shadow: 0 0 16px rgba(99, 102, 241, 0.5); }
-
-/* SVG图标 */
-.global-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+/* 浮动菜单用的一进一出 */
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
-.global-icon svg {
-  width: 100%;
-  height: 100%;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.global-icon-sm {
-  width: 16px;
-  height: 16px;
-}
-
-.global-icon-md {
-  width: 20px;
-  height: 20px;
-}
-
-.global-icon-lg {
-  width: 24px;
-  height: 24px;
-}
-
-.global-icon-xl {
-  width: 32px;
-  height: 32px;
-}
-
-.global-icon-2xl {
-  width: 48px;
-  height: 48px;
+@keyframes floatOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.9);
+  }
 }

@@ -11,6 +11,7 @@ import '@M/app/index.ts'
 import '@M/players/index.ts'
 
 import { siteConfig } from '@S/config/site.ts'
+import { applyTheme } from '@S/config/theme.ts'
 import { ensureTurnstileToken, isTurnstileEnabled } from '@S/turnstile/turnstile.ts'
 
 // 页面标题跟随配置（构建期注入，运维改 config.env 即可）
@@ -23,18 +24,18 @@ if (isTurnstileEnabled()) {
 }
 
 // 全局样式
+// 顺序有讲究：main.css 引入 Tailwind，themes/index.css 提供基础层 + 各主题
 import Aura from '@primeuix/themes/aura'
-import '@S/styles/global.css'
 import '@S/assets/main.css'
-import '@S/assets/base.css'
-import '@S/assets/theme.css'
-import '@S/assets/bonfire-theme.css'
+import '@S/themes/index.css'
+import '@S/styles/global.css'
 import '@S/layout'
-
-import '@S/assets/primevue.css'
 
 // 初始化主题系统 - 支持 light/dark/system 三种模式
 ;(function initTheme() {
+  // 界面主题（液态玻璃 / Memphis）——构建期定死，这里只是兜底再写一次
+  applyTheme()
+
   const savedTheme = localStorage.getItem('theme')
   let isDark = false
   

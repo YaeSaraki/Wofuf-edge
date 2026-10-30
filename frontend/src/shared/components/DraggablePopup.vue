@@ -2,7 +2,6 @@
 import {
   computed,
   nextTick,
-  onMounted,
   onUnmounted,
   ref,
   watch,
@@ -39,12 +38,6 @@ const emit = defineEmits<{
 
 // 弹窗 DOM 引用
 const popupRef = ref<HTMLElement | null>(null)
-
-// 夜间模式状态
-const isDark = ref(false)
-const checkDarkMode = () => {
-  isDark.value = document.documentElement.classList.contains('dark')
-}
 
 // 拖拽状态
 const dragState = ref({
@@ -263,19 +256,6 @@ onUnmounted(() => {
   document.removeEventListener('touchend', handleDragEnd)
 })
 
-// 初始化和监听夜间模式变化
-onMounted(() => {
-  checkDarkMode()
-  // 使用 MutationObserver 监听 dark class 变化
-  const observer = new MutationObserver(() => {
-    checkDarkMode()
-  })
-  observer.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ['class']
-  })
-})
-
 // 暴露插槽道具（供父组件使用拖拽开始方法）
 defineExpose({
   handleDragStart,
@@ -288,7 +268,6 @@ defineExpose({
     ref="popupRef"
     :style="popupStyle"
     class="draggable-popup shadow-xl rounded-2xl overflow-y-auto no-scrollbar flex flex-col"
-    :class="{ 'draggable-popup--dark': isDark }"
     @click.stop
   >
     <slot :closePopup="closePopup" :handleDragStart="handleDragStart" name="content" />
@@ -296,37 +275,14 @@ defineExpose({
 </template>
 
 <style scoped>
+/* 表面交给主题：液态玻璃是通透玻璃感，孟菲斯是实色墨边硬投影 */
 .draggable-popup {
   position: fixed;
-  /* 液态玻璃效果 - 增强版 */
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.35) 0%,
-    rgba(255, 255, 255, 0.25) 50%,
-    rgba(255, 255, 255, 0.35) 100%
-  );
-  backdrop-filter: blur(24px) saturate(200%);
-  -webkit-backdrop-filter: blur(24px) saturate(200%);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.12),
-    0 2px 8px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.2);
-}
-
-.draggable-popup--dark {
-  background: linear-gradient(
-    135deg,
-    rgba(70, 70, 80, 0.45) 0%,
-    rgba(60, 60, 67, 0.4) 50%,
-    rgba(70, 70, 80, 0.45) 100%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.35),
-    0 2px 8px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+  background: var(--ui-nav-bg);
+  backdrop-filter: var(--ui-nav-blur);
+  -webkit-backdrop-filter: var(--ui-nav-blur);
+  border: 1px solid var(--ui-nav-border);
+  box-shadow: var(--ui-nav-shadow);
+  color: var(--ui-text);
 }
 </style>
