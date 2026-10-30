@@ -144,6 +144,12 @@ app.get('/api/v1/overview', async (c) => {
 
 /* ============================ 玩家 ============================ */
 
+app.get('/api/v1/players', async (c) => {
+  const result = await PlayersUseCases.getOnlinePlayers(c.env)
+  if (!result.ok) return respond(c, result)
+  return respond(c, { ok: true as const, value: result.value })
+})
+
 app.get('/api/v1/players/playerNameOrUuid/:playerNameOrUuid', async (c) => {
   const result = await PlayersUseCases.getPlayer(c.env, c.req.param('playerNameOrUuid'))
   if (!result.ok) return respond(c, result)

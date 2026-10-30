@@ -57,6 +57,10 @@ const index = {
     zh: '加载玩家资料失败',
     en: 'Failed to load player profile',
   },
+  'yesterday-online-empty': {
+    zh: '昨日没有玩家在线',
+    en: 'No players were online yesterday',
+  },
   'error.loading-yesterday-online': {
     zh: '加载昨日在线列表失败',
     en: 'Failed to load yesterday online list',

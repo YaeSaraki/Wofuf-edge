@@ -118,6 +118,27 @@ export const PlayersUseCases = {
     return Ok({ playerNames: names })
   },
 
+  /**
+   * 在线玩家列表。
+   *
+   * 判定口径与采集器一致：最近一次 Cron 快照里出现过 = 在线。
+   * 窗口取 2 个采集周期（5 分钟 × 2），容忍偶发的一次采集失败。
+   */
+  async getOnlinePlayers(env: Env): Promise<Result<PlayerSummary[]>> {
+    const windowMs = 10 * 60 * 1000
+    const rows = await PlayersRepo.recentlySeenPlayers(env.DB, Date.now() - windowMs)
+    return Ok(
+      rows.map((row) => ({
+        id: row.player_id,
+        name: row.player_name,
+        firstLogin: row.first_login,
+        lastLogin: row.last_login,
+        totalPlaytimeSeconds: row.total_playtime,
+        updateTime: row.update_time,
+      })),
+    )
+  },
+
   async getRandom(env: Env, count: number): Promise<Result<PlayerSummary[]>> {
     const size = Math.min(Math.max(count || 1, 1), 50)
     const players = await PlayersRepo.random(env.DB, size)

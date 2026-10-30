@@ -146,6 +146,20 @@ export const PlayersRepo = {
       .run()
   },
 
+  /**
+   * 最近一次采集里出现过的玩家。
+   *
+   * 「在线」在采集器眼里就是「最近一次 Cron 快照里有它」，
+   * 所以用 update_time 过滤，而不是另外维护一张在线表。
+   */
+  async recentlySeenPlayers(db: D1Database, sinceMs: number): Promise<PlayerRow[]> {
+    const { results } = await db
+      .prepare('SELECT * FROM players WHERE update_time >= ? ORDER BY last_login DESC')
+      .bind(sinceMs)
+      .all<PlayerRow>()
+    return results
+  },
+
   async yesterdayPlayerNames(db: D1Database, day: string): Promise<string[]> {
     const { results } = await db
       .prepare('SELECT player_name FROM players_daily_online WHERE day = ? ORDER BY last_login DESC')

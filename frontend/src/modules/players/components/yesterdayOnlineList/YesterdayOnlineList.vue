@@ -139,7 +139,11 @@ onMounted(() => {
         {{ translate('app', 'actions.retry') }}
       </button>
     </div>
-    <div v-else-if="playerNameList?.playerNames.length === 1"></div>
+    <!-- 只有一个人时也要显示：之前这里写的是 `length === 1` 渲染空 div，
+         结果「昨日在线恰好只有一个人」时整张列表被吞掉。 -->
+    <div v-else-if="!playerNameList?.playerNames?.length" class="bf-hint">
+      {{ translate('players', 'yesterday-online-empty') }}
+    </div>
     <div v-else class="bf-card-list">
       <div
         v-for="item in playerNameList?.playerNames"
