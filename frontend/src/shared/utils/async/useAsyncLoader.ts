@@ -1,4 +1,5 @@
 import {onUnmounted, ref} from 'vue'
+import {translate} from '@S/services/i18n'
 
 /**
  * 通用异步加载状态管理组合式函数
@@ -20,7 +21,7 @@ export function useAsyncLoader() {
    */
   async function executeAsync<T>(
     asyncFn: (signal: AbortSignal) => Promise<T>,
-    errorTip = '操作失败，请稍后重试',
+    errorTip = translate('app', 'error.retry'),
   ): Promise<T | null> {
     // 重置状态
     isLoading.value = true

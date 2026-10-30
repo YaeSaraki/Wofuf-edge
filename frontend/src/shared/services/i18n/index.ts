@@ -2,6 +2,13 @@
 import type {ModuleTranslations, Translations} from './types.ts'
 import {getLocale, type Locale} from './useLocale.ts'
 
+// 组件要用当前语言时从这儿取，别直接 import 内部文件
+export {getLocale, setLocale, useLocale} from './useLocale.ts'
+export type {Locale} from './useLocale.ts'
+
+/** 插值参数：条目里的 {name} 会被同名参数替换 */
+export type TranslationParams = Record<string, string | number>
+
 // 所有模块的翻译集合
 const moduleTranslations: ModuleTranslations = {}
 
@@ -41,7 +48,20 @@ export function hasTranslation(moduleName: string, key: string): boolean {
   return Boolean(entry.zh || entry.en)
 }
 
-export function translate(moduleName: string, key: string): string {
+/**
+ * 把条目里的 {name} 占位符换成 params 里的值。
+ *
+ * 没提供对应参数的占位符**原样保留** —— 界面上直接就能看出漏传了什么，
+ * 总比悄悄渲染成空字符串好。
+ */
+function interpolate(text: string, params?: TranslationParams): string {
+  if (!params) return text
+  return text.replace(/\{(\w+)\}/g, (placeholder, name: string) =>
+    name in params ? String(params[name]) : placeholder,
+  )
+}
+
+export function translate(moduleName: string, key: string, params?: TranslationParams): string {
   const locale = getLocale()
   const defaultLocale: Locale = 'en'
 
@@ -56,7 +76,10 @@ export function translate(moduleName: string, key: string): string {
       }
       if (translations[guessKey] && translations[guessKey] != undefined) {
         console.log(`Translation key found but module name not match: ${moduleName}.${guessKey}`)
-        return translations[guessKey][locale] || translations[guessKey][defaultLocale]
+        return interpolate(
+          translations[guessKey][locale] || translations[guessKey][defaultLocale],
+          params,
+        )
       }
     }
     // 未找到翻译
@@ -65,7 +88,7 @@ export function translate(moduleName: string, key: string): string {
   }
 
   if (module[key]) {
-    return module[key][locale] || module[key][defaultLocale]
+    return interpolate(module[key][locale] || module[key][defaultLocale], params)
   }
   // 未找到翻译
   console.warn(`Translation not found: ${moduleName}.${key}`)

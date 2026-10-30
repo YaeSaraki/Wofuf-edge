@@ -65,6 +65,67 @@ const index = {
     zh: '加载昨日在线列表失败',
     en: 'Failed to load yesterday online list',
   },
+
+  // 接口级兜底文案：请求本身失败（网络异常之类）时用
+  // 后端给了错误码的话，优先用全局映射（app 命名空间的 error.*）
+  'error.player-random': {
+    zh: '获取随机玩家资料失败',
+    en: 'Failed to load a random player profile',
+  },
+  'error.player-profile': {
+    zh: '获取玩家资料失败',
+    en: 'Failed to load player profile',
+  },
+  'error.player-yesterday': {
+    zh: '获取昨日在线玩家失败',
+    en: 'Failed to load yesterday online players',
+  },
+  'error.player-skin': {
+    zh: '获取玩家皮肤失败',
+    en: 'Failed to load player skin',
+  },
+  'error.player-search': {
+    zh: '搜索玩家失败',
+    en: 'Failed to search players',
+  },
+  'error.server-status': {
+    zh: '获取服务器状态失败',
+    en: 'Failed to load server status',
+  },
+  'error.advancements': {
+    zh: '获取成就数据失败',
+    en: 'Failed to load advancements',
+  },
+
+  // 玩家搜索
+  'search.placeholder': {
+    zh: '搜索玩家名称',
+    en: 'Search player name',
+  },
+  'search.result-count': {
+    zh: '找到 {count} 位玩家',
+    en: 'Found {count} players',
+  },
+  'search.no-match': {
+    zh: '未找到匹配 "{query}" 的玩家',
+    en: 'No players found matching "{query}"',
+  },
+  'search.failed': {
+    zh: '搜索失败',
+    en: 'Search failed',
+  },
+
+  // 相对时间
+  'time.today': {zh: '今天', en: 'today'},
+  'time.yesterday': {zh: '昨天', en: 'yesterday'},
+  'time.days-ago': {zh: '{count} 天前', en: '{count} days ago'},
+  'time.weeks-ago': {zh: '{count} 周前', en: '{count} weeks ago'},
+
+  // 无障碍文本
+  'alt.player-avatar': {
+    zh: '{name} 的头像',
+    en: "{name}'s avatar",
+  },
 }
 
 // 注册块翻译

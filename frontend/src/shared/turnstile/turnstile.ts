@@ -14,6 +14,8 @@
  * 2. **令牌是一次性的**：服务端只能校验一次，所以这里缓存住它给一串请求复用（4 分钟）。
  */
 
+import {translate} from '@S/services/i18n'
+
 const SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined
 
 /** Turnstile 令牌有效期 5 分钟，这里留 1 分钟余量提前换掉 */
@@ -66,7 +68,7 @@ const loadScript = (): Promise<void> => {
     // onload 回调没触发时的兜底
     script.onload = () => resolve()
     script.onerror = () =>
-      reject(new Error('Turnstile 脚本加载失败（可能被广告拦截器、隐私插件或网络挡住）'))
+      reject(new Error(translate('app', 'error.turnstileScriptFailed')))
     document.head.appendChild(script)
   })
 
@@ -100,7 +102,7 @@ export const ensureTurnstileToken = async (): Promise<string | null> => {
 
         // 一句人话提示：否则用户根本不知道右下角那个小方块是要点的东西
         const hint = document.createElement('div')
-        hint.textContent = '人机验证：请点击下方复选框'
+        hint.textContent = translate('app', 'error.turnstileHint')
         hint.style.fontSize = '12px'
         hint.style.padding = '4px 8px'
         hint.style.borderRadius = '6px'
@@ -173,7 +175,7 @@ export const ensureTurnstileToken = async (): Promise<string | null> => {
           }
           console.warn('[turnstile] 等待超时，没有拿到令牌')
           // 提示**留在页面上**：它得让用户看见，否则失败就是静默的
-          hint.textContent = '人机验证未完成（可能需要点击复选框，或脚本被拦截器挡了）'
+          hint.textContent = translate('app', 'error.turnstileTimeout')
           hint.style.background = 'rgba(180,40,40,.92)'
           finish(null)
         }, TOKEN_WAIT_MS)
@@ -182,7 +184,7 @@ export const ensureTurnstileToken = async (): Promise<string | null> => {
       console.warn('[turnstile] 获取令牌失败：', error)
       // 页面留一条提示：脚本被拦截器挡掉时，只有这里能看出原因
       const banner = document.createElement('div')
-      banner.textContent = '人机验证脚本加载失败（可能被广告拦截器或网络挡住）'
+      banner.textContent = translate('app', 'error.turnstileScriptFailed')
       banner.style.cssText =
         'position:fixed;right:16px;bottom:16px;z-index:9999;font-size:12px;padding:4px 8px;' +
         'border-radius:6px;background:rgba(180,40,40,.92);color:#fff'

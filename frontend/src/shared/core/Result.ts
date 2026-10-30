@@ -28,7 +28,8 @@ export class Result<T> {
     // A failure without a message is a failure nobody can act on: it renders as an empty
     // error and, before this guard, threw `InvalidOperation` on the way in. An empty message is
     // a symptom of a broken response, not a message the user can use.
-    return new Result<U>(false, error || '请求失败')
+    // 兜底用英文：这一层不依赖 i18n，且与 translate() 的 fallback 策略（en）一致。
+    return new Result<U>(false, error || 'Request failed')
   }
 
   public static combine(results: Result<never>[]): Result<never> {

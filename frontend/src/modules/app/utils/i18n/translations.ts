@@ -34,6 +34,37 @@ const translations = {
   'common.error': {zh: '出错了', en: 'Error'},
   'common.success': {zh: '成功', en: 'Success'},
 
+  // 错误文案（全局）：后端错误码 → 文案，见 shared/infra/api/apiErrors.ts
+  'error.turnstileRequired': {
+    zh: '缺少人机验证令牌，请完成人机验证',
+    en: 'Human verification is required. Please complete the check.',
+  },
+  'error.turnstileFailed': {zh: '人机验证未通过', en: 'Human verification failed.'},
+  'error.notFound': {zh: '没有找到对应的数据', en: 'The requested data was not found.'},
+  'error.internal': {zh: '服务器内部错误，请稍后重试', en: 'Internal server error. Please try again.'},
+  'error.retry': {zh: '操作失败，请稍后重试', en: 'Something went wrong. Please try again.'},
+  'error.apiNotJson': {
+    zh: 'API 返回的不是 JSON（{url}）。请确认 VITE_API_BASE_URL 指向 Worker，且 API 已部署。',
+    en: 'The API did not return JSON ({url}). Check that VITE_API_BASE_URL points at the Worker and the API is deployed.',
+  },
+  'error.apiRequestFailed': {
+    zh: 'API 请求失败（HTTP {status}）：{url}',
+    en: 'API request failed (HTTP {status}): {url}',
+  },
+  // 人机验证提示：直接写进页面上的字
+  'error.turnstileHint': {
+    zh: '人机验证：请点击下方复选框',
+    en: 'Human verification: please tick the checkbox below.',
+  },
+  'error.turnstileTimeout': {
+    zh: '人机验证未完成（可能需要点击复选框，或脚本被拦截器挡了）',
+    en: 'Human verification was not completed (you may need to tick the checkbox, or a blocker stopped the script).',
+  },
+  'error.turnstileScriptFailed': {
+    zh: '人机验证脚本加载失败（可能被广告拦截器或网络挡住）',
+    en: 'The human verification script failed to load (an ad blocker or the network may have stopped it).',
+  },
+
   // 状态页
   'status.yesterdayOnline': {zh: '昨日在线', en: 'Yesterday Online'},
   'status.description': {zh: '欢迎来到 MCS 服务器状态页面', en: 'Welcome to MCS Server Status Page'},
