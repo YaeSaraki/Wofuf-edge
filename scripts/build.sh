@@ -66,7 +66,9 @@ if [ ! -d "$FRONT_DIR" ]; then
   FRONT_DIR=""
 else
   cd "$FRONT_DIR"
-  VITE_API_BASE_URL="https://${API_HOST}" \
+  # 构建日志先落盘：失败时把末尾几行打出来，否则 CI 上只会看到一句"构建失败"
+  FRONT_LOG="$DEPLOY_DIR/frontend-build.log"
+  if ! VITE_API_BASE_URL="https://${API_HOST}" \
   VITE_TURNSTILE_SITE_KEY="${TURNSTILE_SITE_KEY:-}" \
   VITE_SERVER_NAME="${SERVER_NAME:-MCS}" \
   VITE_SERVER_TAGLINE="${SERVER_TAGLINE:-Minecraft Server}" \
@@ -75,7 +77,13 @@ else
   VITE_SERVER_FOUNDED="${SERVER_FOUNDED:-2024}" \
   VITE_SERVER_INTRO="${SERVER_INTRO:-}" \
   VITE_UI_THEME="$UI_THEME_RESOLVED" \
-    npm run build >/dev/null 2>&1 || die "前端构建失败"
+    npm run build >"$FRONT_LOG" 2>&1; then
+    err "---- 前端构建输出（末尾 40 行）----"
+    tail -40 "$FRONT_LOG" >&2
+    rm -f "$FRONT_LOG"
+    die "前端构建失败"
+  fi
+  rm -f "$FRONT_LOG"
 
   # 前端产物收进 deploy/web/（部署只认 deploy/ 目录，结构统一）
   rm -rf "$WEB_DIR"

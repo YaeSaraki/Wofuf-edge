@@ -10,12 +10,16 @@ jobs:
   check:
     name: 后端 + 前端 + 运维脚本
     runs-on: ubuntu-latest
+    # 正常一次跑完不到 1 分钟；20 分钟足够，超时说明某一步挂住了
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      # v7 起 action 跑在 Node 24 runtime 上；v4 声明的是 Node 20，已被 GitHub 弃用
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: 20
+          # Node 20 已于 2026-04-30 EOL
+          node-version: 24
           cache: npm
           cache-dependency-path: package-lock.json
 
@@ -26,8 +30,12 @@ jobs:
       - name: 类型检查（后端 + 前端）
         run: npm run typecheck
 
-      - name: 构建（后端 + 前端）
-        run: npm run build
+      # 走项目自己的构建脚本，而不是裸 npm run build：
+      #  - 主题 / API 地址等 VITE_* 变量按 config.env 注入
+      #    （config.env 不入库，脚本会自动从 config.env.example 生成一份）
+      #  - CI 验证的就是真正部署用的那条构建路径
+      - name: 构建（后端 + 前端 + 部署包）
+        run: bash scripts/build.sh
 
       - name: 运维脚本语法检查
         run: |
