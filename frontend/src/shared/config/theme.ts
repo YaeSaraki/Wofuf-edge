@@ -5,7 +5,7 @@
  *    · 明暗模式 = 浅色 / 深色（运行时可切，存 localStorage）
  *    · 界面主题 = 液态玻璃 / Memphis（**构建期**决定，改 config.env 的 UI_THEME）
  *
- * 主题值来自构建期注入的 VITE_UI_THEME（scripts/build.sh 从 config.env 传进来）。
+ * 主题值来自构建期注入的 VITE_UI_THEME（frontend/vite.config.ts 从 config.env 读出来注入）。
  * 没配或配错了 → 退回默认主题，不会白屏。
  *
  * 新增主题：见 shared/themes/_template.css
@@ -44,7 +44,11 @@ export const DEFAULT_THEME: ThemeId = 'memphis'
 /** 把外部输入规整成合法主题 id */
 export function resolveThemeId(raw: string | undefined | null): ThemeId {
   const value = (raw ?? '').trim().toLowerCase()
-  return value in THEME_REGISTRY ? (value as ThemeId) : DEFAULT_THEME
+  // 用 hasOwnProperty 而不是 `in`：`in` 会命中原型链，
+  // 'constructor' / 'toString' 会被当成合法主题 id，首屏就白屏了
+  return Object.prototype.hasOwnProperty.call(THEME_REGISTRY, value)
+    ? (value as ThemeId)
+    : DEFAULT_THEME
 }
 
 /** 当前站点启用的主题（构建期定死） */

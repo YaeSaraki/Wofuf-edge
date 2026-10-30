@@ -223,7 +223,7 @@ const ungroupedIncompleteAdvancements = computed(() => {
 
         <!-- 统计卡片 -->
         <div class="ui-adv-stats">
-          <AppCard class="ui-adv-stat-card ui-adv-stat-card--primary" variant="flat" size="sm">
+          <AppCard class="ui-adv-stat-card ui-adv-stat-card--primary" variant="flat" size="sm" pattern>
             <div class="ui-adv-stat-label">
               {{ translate('players', 'advancements.total') }}
             </div>
@@ -231,7 +231,7 @@ const ungroupedIncompleteAdvancements = computed(() => {
               {{ advancementStats.total }}
             </div>
           </AppCard>
-          <AppCard class="ui-adv-stat-card ui-adv-stat-card--success" variant="flat" size="sm">
+          <AppCard class="ui-adv-stat-card ui-adv-stat-card--success" variant="flat" size="sm" pattern>
             <div class="ui-adv-stat-label">
               {{ translate('players', 'advancements.completed') }}
             </div>
@@ -239,7 +239,7 @@ const ungroupedIncompleteAdvancements = computed(() => {
               {{ advancementStats.completed }}
             </div>
           </AppCard>
-          <AppCard class="ui-adv-stat-card ui-adv-stat-card--accent" variant="flat" size="sm">
+          <AppCard class="ui-adv-stat-card ui-adv-stat-card--accent" variant="flat" size="sm" pattern>
             <div class="ui-adv-stat-label">
               {{ translate('players', 'advancements.completion-rate') }}
             </div>

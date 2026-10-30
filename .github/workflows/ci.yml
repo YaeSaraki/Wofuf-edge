@@ -37,6 +37,11 @@ jobs:
       - name: 构建（后端 + 前端 + 部署包）
         run: bash scripts/build.sh
 
+      # 主题只有一处真源（scripts/lib.sh），其余副本不许漂移；
+      # 顺带验证产物里注入的主题合法、首屏内联脚本语法没问题（= 不会白屏）
+      - name: 主题一致性断言
+        run: bash scripts/check-theme.sh
+
       - name: 运维脚本语法检查
         run: |
           for f in scripts/*.sh wofuf; do

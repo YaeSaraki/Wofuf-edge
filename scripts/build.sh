@@ -15,7 +15,8 @@ load_config
 require_cmd node "需要 Node.js"
 
 # 主题：先校验再用，免得前端构建出一个白屏站点
-UI_THEME_RESOLVED="$(resolve_ui_theme)"
+# resolve_ui_theme 把结果写进全局变量（不要用 $(...) 捕获，警告会被一起吞进去）
+resolve_ui_theme
 
 step "1/4 读取配置"
 sub "站点      ${SERVER_NAME:-MCS}（${SERVER_CORE:-?} ${SERVER_VERSION:-?}）"

@@ -201,6 +201,7 @@ const getStatsByGroup = (groupId: string) => {
             class="ui-stat-card"
             variant="accent"
             size="sm"
+            pattern
           >
             <div class="ui-stat-label">
               {{ translate('players', `stats.group.${group.category.toLowerCase()}`) }}

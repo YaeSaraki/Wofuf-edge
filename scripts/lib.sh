@@ -25,31 +25,41 @@ C_G=$'\033[32m'; C_Y=$'\033[33m'; C_R=$'\033[31m'; C_C=$'\033[36m'; C_M=$'\033[3
 step() { printf "\n%s▸ %s%s\n" "$C_C" "$*" "$C_RESET"; }
 sub()  { printf "  %s→%s %s\n" "$C_DIM" "$C_RESET" "$*"; }
 ok()   { printf "  %s✓%s %s\n" "$C_G" "$C_RESET" "$*"; }
-warn() { printf "  %s!%s %s\n" "$C_Y" "$C_RESET" "$*"; }
-err()  { printf "  %s✗%s %s\n" "$C_R" "$C_RESET" "$*"; }
+# 警告与错误走 stderr：它们是给人看的，不该混进命令替换的输出里
+# （warn 曾经走 stdout，被 build.sh 的 $(...) 吞进主题值，首屏直接白屏）
+warn() { printf "  %s!%s %s\n" "$C_Y" "$C_RESET" "$*" >&2; }
+err()  { printf "  %s✗%s %s\n" "$C_R" "$C_RESET" "$*" >&2; }
 die()  { err "$*"; exit 1; }
 note() { printf "  %s%s%s\n" "$C_DIM" "$*" "$C_RESET"; }
 
 require_cmd() { command -v "$1" >/dev/null 2>&1 || die "缺少命令：$1（$2）"; }
 
 # 可用的界面主题（构建期由 config.env 的 UI_THEME 指定）
-# 与 frontend/src/shared/config/theme.ts 的 THEME_REGISTRY 保持一致
+# 真源在这里；frontend/vite.config.ts 与 frontend/src/shared/config/theme.ts
+# 各有一份副本，scripts/check-theme.sh 会断言几处不漂移。
 UI_THEMES="liquid-glass memphis"
 DEFAULT_UI_THEME="memphis"
+# resolve_ui_theme 的结果（调用后覆盖）
+UI_THEME_RESOLVED="$DEFAULT_UI_THEME"
 
 # 校验 UI_THEME；不合法就退回默认主题并提示
+# 结果写进全局变量 UI_THEME_RESOLVED —— 不要改成 stdout 返回：
+# 命令替换会把警告一起吞进去，主题值就脏了（曾因此白屏）
 resolve_ui_theme() {
   local t="${UI_THEME:-}"
   t="$(printf '%s' "$t" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')"
   if [ -z "$t" ]; then
-    printf '%s' "$DEFAULT_UI_THEME"
+    UI_THEME_RESOLVED="$DEFAULT_UI_THEME"
     return 0
   fi
   for known in $UI_THEMES; do
-    [ "$t" = "$known" ] && { printf '%s' "$t"; return 0; }
+    if [ "$t" = "$known" ]; then
+      UI_THEME_RESOLVED="$t"
+      return 0
+    fi
   done
   warn "UI_THEME=${UI_THEME} 不是已知主题（可选：${UI_THEMES// /, }）→ 退回 ${DEFAULT_UI_THEME}"
-  printf '%s' "$DEFAULT_UI_THEME"
+  UI_THEME_RESOLVED="$DEFAULT_UI_THEME"
 }
 
 ask_yes_no() {

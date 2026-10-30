@@ -41,7 +41,7 @@ UI_THEME="memphis"
 ./wofuf doctor              # 体检时会显示当前主题
 ```
 
-**配错了不会白屏**：构建时校验不通过会自动退回 `liquid-glass` 并打印警告。
+**配错了不会白屏**：构建时校验不通过会自动退回 `memphis` 并打印警告。
 `frontend/index.html` 里还有一段内联脚本，在首屏渲染前就把 `data-theme` 写上，所以不会闪一下默认主题。
 
 ---
@@ -87,10 +87,11 @@ html[data-theme='memphis'].dark            { /* 深色 */ }
 > **写主题时注意**：深色变体必须写成 `html[data-theme='xxx'].dark`
 > （而不是 `.dark`），否则优先级压不住浅色那一组。
 
-新增主题要登记两处：
+新增主题要登记三处：
 
 1. `frontend/src/shared/config/theme.ts` 的 `THEME_REGISTRY`
-2. `scripts/lib.sh` 的 `UI_THEMES`
+2. `scripts/lib.sh` 的 `UI_THEMES`（真源）
+3. `frontend/vite.config.ts` 的 `UI_THEMES`
 
 ---
 
@@ -202,7 +203,12 @@ import AppCard from '@S/components/ui/AppCard.vue'
 
 5. 在 `scripts/lib.sh` 的 `UI_THEMES` 里加上 id。
 
-6. `config.env` 里 `UI_THEME="mytheme"`，然后 `./wofuf build && ./wofuf upload`。
+6. 在 `frontend/vite.config.ts` 的 `UI_THEMES` 里加上 id。
+
+7. `config.env` 里 `UI_THEME="mytheme"`，然后 `./wofuf build && ./wofuf upload`。
+
+8. 跑 `scripts/check-theme.sh` 确认几处没漂移（真源在 `scripts/lib.sh`，
+   副本在 `frontend/vite.config.ts`、`theme.ts`、`index.html`、`docs/THEMES.md`）。
 
 ---
 

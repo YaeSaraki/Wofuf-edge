@@ -3,13 +3,19 @@
 一次性迁移脚本：把 --bf-* token 与 .bf-* class 统一到 --ui-* / .ui-*。
 （用完即弃，保留在仓库里是为了让这次重构可复现、可审计。）
 
-用法：python3 scripts/migrate_ui_tokens.py [根目录]
+用法：python3 scripts/migrate_ui_tokens.py [frontend/src 目录]
 """
 import re
 import sys
 from pathlib import Path
 
-ROOT = Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
+# 默认根目录 = 仓库的 frontend/src（下面 FILES 都是相对它写的）。
+# 以前默认是当前目录，于是脚本在仓库根跑时 7 个文件全报「缺失」，什么也没改。
+ROOT = (
+    Path(sys.argv[1]).resolve()
+    if len(sys.argv) > 1
+    else Path(__file__).resolve().parent.parent / "frontend" / "src"
+)
 
 # ---- token 映射：--bf-* → --ui-* --------------------------------------------
 TOKEN_MAP = {

@@ -43,6 +43,14 @@ else
 fi
 "$PROJECT_ROOT/scripts/config.sh" check >/dev/null 2>&1 && mark_ok "配置项校验通过" || mark_warn "配置项有问题（scripts/config.sh check 看详情）"
 
+# 当前生效的界面主题：和构建时同一套校验（非法值退回默认主题）
+resolve_ui_theme
+if [ -n "${UI_THEME:-}" ] && [ "$UI_THEME_RESOLVED" != "$UI_THEME" ]; then
+  mark_warn "界面主题    ${UI_THEME} 不是已知主题 → 实际用 ${UI_THEME_RESOLVED}（可选：${UI_THEMES// /, }）"
+else
+  mark_ok "界面主题    ${UI_THEME_RESOLVED}（可选：${UI_THEMES// /, }）"
+fi
+
 # ── 4. 登录 ──
 step "Cloudflare 登录"
 WHOAMI="$(cd "$BACKEND_DIR" && npx --no-install wrangler whoami 2>/dev/null || true)"

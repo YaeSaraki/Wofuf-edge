@@ -213,7 +213,7 @@ onUnmounted(() => {
         <!-- 服务器状态信息 -->
         <div v-else-if="serverStatus" class="server-stats-grid">
           <!-- 在线人数 -->
-          <AppCard class="stat-card" interactive>
+          <AppCard class="stat-card" interactive pattern>
             <div class="stat-icon-well ui-icon-well" style="--ui-block: var(--ui-block-1)">
               <div class="ui-icon ui-icon-xl">
                 <svg viewBox="0 0 24 24">
@@ -241,7 +241,7 @@ onUnmounted(() => {
           </AppCard>
 
           <!-- TPS -->
-          <AppCard class="stat-card" interactive>
+          <AppCard class="stat-card" interactive pattern>
             <div class="stat-icon-well ui-icon-well" style="--ui-block: var(--ui-block-2)">
               <div class="ui-icon ui-icon-xl">
                 <svg viewBox="0 0 24 24">
@@ -261,7 +261,7 @@ onUnmounted(() => {
           </AppCard>
 
           <!-- 心跳状态 -->
-          <AppCard class="stat-card" interactive>
+          <AppCard class="stat-card" interactive pattern>
             <div class="stat-icon-well ui-icon-well" style="--ui-block: var(--ui-block-3)">
               <div class="ui-icon ui-icon-xl">
                 <svg viewBox="0 0 24 24">
@@ -283,7 +283,7 @@ onUnmounted(() => {
           </AppCard>
 
           <!-- 更新时间 -->
-          <AppCard class="stat-card" interactive>
+          <AppCard class="stat-card" interactive pattern>
             <div class="stat-icon-well ui-icon-well" style="--ui-block: var(--ui-block-1)">
               <div class="ui-icon ui-icon-xl">
                 <svg viewBox="0 0 24 24">

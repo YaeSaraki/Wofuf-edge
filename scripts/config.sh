@@ -93,9 +93,9 @@ case "$CMD" in
     fi
     if [ "$PROBLEMS" -gt 0 ]; then
       warn "有 $PROBLEMS 项需要注意"
-    else
-      ok "配置看起来没问题"
+      exit 1
     fi
+    ok "配置看起来没问题"
     ;;
 
   *)
