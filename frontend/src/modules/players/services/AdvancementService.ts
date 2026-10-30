@@ -9,6 +9,7 @@ import {cacheService} from '@S/infra/cache'
 import {translate} from '@S/services/i18n'
 import {http} from '@S/infra/api/http.ts'
 import {Result} from '@S/core/Result.ts'
+import {errorCodeOf, formatApiError} from '@S/infra/api/apiErrors.ts'
 
 import type {RequestOptions} from '@SU/async/RequestOptions.ts'
 
@@ -108,10 +109,12 @@ export class AdvancementService implements IAdvancementService {
         return Result.success<PlayerAdvancementList>(response.data.data)
       }
 
-      return Result.failure<PlayerAdvancementList>(response.data.message)
+      return Result.failure<PlayerAdvancementList>(
+        formatApiError('error.advancements', response.data.code),
+      )
     } catch (error) {
       return Result.failure<PlayerAdvancementList>(
-        error instanceof Error ? error.message : '获取成就数据失败',
+        formatApiError('error.advancements', errorCodeOf(error)),
       )
     }
   }

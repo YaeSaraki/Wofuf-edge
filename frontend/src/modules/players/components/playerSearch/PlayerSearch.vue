@@ -5,7 +5,7 @@ import { PlayerService } from '@M/players/services/PlayerService.ts'
 import type { PlayerSearchResult } from '@M/players/dtos/PlayerSearch.ts'
 import { renderAvatar } from '@SU/renderUTil.ts'
 import { addImagePrefixToBase64 } from '@SU/Base64Util.ts'
-import { translate } from '@S/services/i18n'
+import { getLocale, translate } from '@S/services/i18n'
 import AppCard from '@S/components/ui/AppCard.vue'
 
 const router = useRouter()
@@ -107,11 +107,11 @@ async function performSearch() {
       searchResults.value.forEach(player => loadAvatar(player))
     } else {
       searchResults.value = []
-      errorMsg.value = result.error as string || '搜索失败'
+      errorMsg.value = (result.error as string) || translate('players', 'search.failed')
     }
   } catch (e) {
     searchResults.value = []
-    errorMsg.value = e instanceof Error ? e.message : '搜索失败'
+    errorMsg.value = e instanceof Error ? e.message : translate('players', 'search.failed')
   } finally {
     isSearching.value = false
     hasSearched.value = true
@@ -147,11 +147,12 @@ function formatLastLogin(timestamp: number): string {
   const diffMs = now.getTime() - date.getTime()
   const diffDays = Math.floor(diffMs / 86400000)
 
-  if (diffDays === 0) return '今天'
-  if (diffDays === 1) return '昨天'
-  if (diffDays < 7) return `${diffDays} 天前`
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)} 周前`
-  return date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })
+  if (diffDays === 0) return translate('players', 'time.today')
+  if (diffDays === 1) return translate('players', 'time.yesterday')
+  if (diffDays < 7) return translate('players', 'time.days-ago', {count: diffDays})
+  if (diffDays < 30) return translate('players', 'time.weeks-ago', {count: Math.floor(diffDays / 7)})
+  // 超过一个月就显示绝对日期，格式跟着当前语言走
+  return date.toLocaleDateString(getLocale(), {month: 'short', day: 'numeric'})
 }
 
 // 清除搜索
@@ -176,7 +177,7 @@ function clearSearch() {
           v-model="searchQuery"
           type="text"
           class="ui-search-input"
-          placeholder="搜索玩家名称或 UUID..."
+          :placeholder="translate('players', 'search.placeholder')"
         />
         <button
           v-if="searchQuery"
@@ -197,7 +198,9 @@ function clearSearch() {
     <!-- 搜索结果 -->
     <AppCard v-if="showResults" class="ui-search-results" variant="quiet" size="sm">
       <div class="ui-results-header">
-        <span class="ui-results-count">找到 {{ searchResults.length }} 位玩家</span>
+        <span class="ui-results-count">{{
+          translate('players', 'search.result-count', {count: searchResults.length})
+        }}</span>
       </div>
       <div class="ui-results-list">
         <div
@@ -209,7 +212,7 @@ function clearSearch() {
           <div class="ui-avatar-wrapper">
             <img
               :src="getAvatarUrl(player)"
-              :alt="`${player.name}'s avatar`"
+              :alt="translate('players', 'alt.player-avatar', {name: player.name})"
               class="ui-player-avatar"
               :class="{ 'ui-avatar--loading': isAvatarLoading(player.id) }"
               decoding="async"
@@ -248,7 +251,7 @@ function clearSearch() {
         <path d="m21 21-4.35-4.35"/>
         <path d="M8 8l6 6M14 8l-6 6"/>
       </svg>
-      <p>未找到匹配 "{{ searchQuery }}" 的玩家</p>
+      <p>{{ translate('players', 'search.no-match', {query: searchQuery}) }}</p>
     </div>
 
     <!-- 错误状态 -->

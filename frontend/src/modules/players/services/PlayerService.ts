@@ -10,6 +10,7 @@ import {Result} from '@S/core/Result.ts'
 import {http} from '@S/infra/api/http.ts'
 import {cacheService} from '@S/infra/cache'
 import {renderAvatar as renderAvatarUtil} from '@S/utils/renderUTil.ts'
+import {errorCodeOf, formatApiError} from '@S/infra/api/apiErrors.ts'
 
 
 export interface IPlayerService {
@@ -59,10 +60,12 @@ export class PlayerService implements IPlayerService {
           if (response.data.success) {
             return Result.success<PlayerNameList>(response.data.data)
           }
-          return Result.failure<PlayerNameList>(response.data.message)
+          return Result.failure<PlayerNameList>(
+            formatApiError('error.player-random', response.data.code),
+          )
         } catch (error) {
           return Result.failure<PlayerNameList>(
-            error instanceof Error ? error.message : '获取随机玩家资料失败'
+            formatApiError('error.player-random', errorCodeOf(error)),
           )
         }
       }
@@ -91,10 +94,12 @@ export class PlayerService implements IPlayerService {
           if (response.data.success) {
             return Result.success<Player>(response.data.data)
           }
-          return Result.failure<Player>(response.data.message)
+          return Result.failure<Player>(
+            formatApiError('error.player-profile', response.data.code),
+          )
         } catch (error) {
           return Result.failure<Player>(
-            error instanceof Error ? error.message : '获取玩家资料失败'
+            formatApiError('error.player-profile', errorCodeOf(error)),
           )
         }
       }
@@ -117,10 +122,12 @@ export class PlayerService implements IPlayerService {
           if (response.data.success) {
             return Result.success<PlayerNameList>(response.data.data)
           }
-          return Result.failure<PlayerNameList>(response.data.message)
+          return Result.failure<PlayerNameList>(
+            formatApiError('error.player-yesterday', response.data.code),
+          )
         } catch (error) {
           return Result.failure<PlayerNameList>(
-            error instanceof Error ? error.message : '获取昨日在线玩家失败'
+            formatApiError('error.player-yesterday', errorCodeOf(error)),
           )
         }
       }
@@ -149,10 +156,12 @@ export class PlayerService implements IPlayerService {
           if (response.data.success) {
             return Result.success<PlayerSkin>(response.data.data)
           }
-          return Result.failure<PlayerSkin>(response.data.message)
+          return Result.failure<PlayerSkin>(
+            formatApiError('error.player-skin', response.data.code),
+          )
         } catch (error) {
           return Result.failure<PlayerSkin>(
-            error instanceof Error ? error.message : '获取玩家皮肤失败'
+            formatApiError('error.player-skin', errorCodeOf(error)),
           )
         }
       }
@@ -175,11 +184,13 @@ export class PlayerService implements IPlayerService {
       if (response.data.success) {
         return Result.success<PlayerSearchResponse>(response.data.data)
       }
-      return Result.failure<PlayerSearchResponse>(response.data.message)
+      return Result.failure<PlayerSearchResponse>(
+            formatApiError('error.player-search', response.data.code),
+          )
     } catch (error) {
       return Result.failure<PlayerSearchResponse>(
-        error instanceof Error ? error.message : '搜索玩家失败'
-      )
+            formatApiError('error.player-search', errorCodeOf(error)),
+          )
     }
   }
 
@@ -205,10 +216,12 @@ export class PlayerService implements IPlayerService {
           if (response.data.success) {
             return Result.success<ServerStatus>(response.data.data)
           }
-          return Result.failure<ServerStatus>(response.data.message)
+          return Result.failure<ServerStatus>(
+            formatApiError('error.server-status', response.data.code),
+          )
         } catch (error) {
           return Result.failure<ServerStatus>(
-            error instanceof Error ? error.message : '获取服务器状态失败'
+            formatApiError('error.server-status', errorCodeOf(error)),
           )
         }
       }

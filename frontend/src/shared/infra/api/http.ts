@@ -1,6 +1,7 @@
 import axios from 'axios'
 import type { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import { ensureTurnstileToken } from '@S/turnstile/turnstile.ts'
+import { translate } from '@S/services/i18n'
 
 export const http = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -32,8 +33,7 @@ http.interceptors.response.use(
   (response) => {
     if (isApiCall(response) && (typeof response.data !== 'object' || response.data === null)) {
       throw new Error(
-        `API 返回的不是 JSON（${response.config.url}）。` +
-          '请确认 VITE_API_BASE_URL 指向 Worker，且 API 已部署。',
+        translate('app', 'error.apiNotJson', {url: response.config.url ?? ''}),
       )
     }
     return response
@@ -63,13 +63,23 @@ http.interceptors.response.use(
 
     if (error.response && (typeof data !== 'object' || data === null)) {
       return Promise.reject(
-        new Error(`API 请求失败（HTTP ${error.response.status}）：${error.config?.url ?? ''}`),
+        new Error(
+          translate('app', 'error.apiRequestFailed', {
+            status: error.response.status,
+            url: error.config?.url ?? '',
+          }),
+        ),
       )
     }
     // 后端返回的是 {success, code, data, message}：把它的 message 透出来，
     // 否则用户只会看到 "Request failed with status code 403" 这种没有信息量的话。
+    // message 是中文原文，只适合当兜底；**code 才是能翻译的东西**，所以一起挂上去。
     if (envelope && typeof envelope.message === 'string' && envelope.message.length > 0) {
-      return Promise.reject(new Error(envelope.message))
+      const failure = new Error(envelope.message)
+      if (typeof envelope.code === 'string') {
+        ;(failure as Error & {code?: string}).code = envelope.code
+      }
+      return Promise.reject(failure)
     }
     return Promise.reject(error)
   },
