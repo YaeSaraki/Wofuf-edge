@@ -96,13 +96,16 @@ else
   fi
 
   # 首屏内联脚本语法 —— 坏了就是白屏
-  # （node --check 不看 stdin，必须给它一个文件路径；用进程替换避免临时文件）
+  # 语法检查走 stdin：node --check -（Node ≥ 10 都支持，实测 20 / 24 均可）。
+  # 别用进程替换 <(...)：Linux 上它是 pipe:[...] 的 magic symlink，
+  # Node 解析成 /proc/<pid>/fd/pipe:[...] 直接 ENOENT —— macOS 能过、Linux CI 必挂。
   inline_src="$(sed -n '/<script>/,/<\/script>/p' "$WEB_HTML" | sed '1d;$d')"
   if [ -z "$inline_src" ]; then
     fail "产物里找不到首屏内联脚本"
   else
-    inline_err="$(node --check <(printf '%s\n' "$inline_src") 2>&1)"
-    if [ -z "$inline_err" ]; then
+    # 以退出码判定成败，stderr 只当错误信息看
+    # （别用「stderr 是否为空」当判据，那会把无害告警误判成语法错误）
+    if inline_err="$(printf '%s\n' "$inline_src" | node --check - 2>&1)"; then
       ok "首屏内联脚本语法正常"
     else
       fail "首屏内联脚本语法错误（会白屏）"
